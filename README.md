@@ -12,7 +12,7 @@
 [![Licença](https://img.shields.io/badge/licença-MIT-green.svg?style=for-the-badge)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11+-3776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Plataformas](https://img.shields.io/badge/plataformas-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg?style=for-the-badge)]()
-[![Desenvolvido por](https://img.shields.io/badge/autor-Gleisson%20Santos-blueviolet.svg?style=for-the-badge)](https://docfastbr.lovable.app/)
+[![Desenvolvido por](https://img.shields.io/badge/autor-Gleisson%20Santos-blueviolet.svg?style=for-the-badge)])
 
 <p align="center">
   <a href="#-o-que-é-o-docfast">Sobre</a> •
