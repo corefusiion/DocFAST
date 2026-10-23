@@ -152,7 +152,7 @@ python run.py --selftest
 O **DocFAST** foi remodelado, expandido e construído com dedicação por:
 
 * **Desenvolvedor:** **Gleisson Santos**
-* **Portal Oficial:** [**https://docfastbr.lovable.app/**](https://docfastbr.lovable.app/)
+* **Portal Oficial:** [**https://docfastbr.app/**](https://docfastbr.lovable.app/)
 * **Tecnologias:** Python 3.11, PySide6 (Qt6), PyMuPDF (Fitz), Pillow, openpyxl, Windows Acrylic APIs.
 
 ---
@@ -163,9 +163,9 @@ O DocFAST é um software de código aberto, livre para uso pessoal e comercial. 
 
 <div align="center">
 
-[![Doação e Apoio](https://img.shields.io/badge/Apoiar%20o%20Desenvolvedor-docfastbr.lovable.app-2563EB?style=for-the-badge&logo=heart&logoColor=white)](https://docfastbr.lovable.app/)
+[![Doação e Apoio](https://img.shields.io/badge/Apoiar%20o%20Desenvolvedor-docfastbr.app-2563EB?style=for-the-badge&logo=heart&logoColor=white)](https://docfastbr.lovable.app/)
 
-👉 **Contribua através da nossa página oficial:** [**https://docfastbr.lovable.app/**](https://docfastbr.lovable.app/)
+👉 **Contribua através da nossa página oficial:** [**https://docfastbr.app/**](https://docfastbr.lovable.app/)
 
 *Obrigado por utilizar o DocFAST!*
 
