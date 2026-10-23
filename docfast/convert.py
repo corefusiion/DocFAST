@@ -352,8 +352,239 @@ def text_to_docx(src: str | Path) -> list[Path]:
     return [out]
 
 
+
+# ---------------------------------------------------------------- spreadsheets
+SHEET_CSS = """
+* { font-family: sans-serif; }
+body { font-size: 9pt; line-height: 1.3; }
+h2 { font-size: 14pt; color: #1e3a8a; margin-bottom: 8pt; }
+table { border-collapse: collapse; width: 100%; margin: 6pt 0; }
+th { background-color: #2563eb; color: #ffffff; padding: 4pt 6pt; border: 1px solid #1d4ed8; text-align: left; font-size: 8.5pt; font-weight: bold; }
+td { border: 1px solid #cbd5e1; padding: 3pt 5pt; font-size: 8.5pt; }
+tr:nth-child(even) { background-color: #f8fafc; }
+"""
+
+
+def _excel_to_pdf(src: Path, out: Path) -> bool:
+    """Use Microsoft Excel COM (if installed on Windows) for exact print fidelity."""
+    if sys.platform != "win32":
+        return False
+    try:
+        import win32com.client  # type: ignore
+        excel = win32com.client.DispatchEx("Excel.Application")
+        excel.Visible = False
+        excel.DisplayAlerts = False
+        try:
+            wb = excel.Workbooks.Open(str(src.resolve()), ReadOnly=True)
+            wb.ExportAsFixedFormat(0, str(out.resolve()))  # 0 = xlTypePDF
+            wb.Close(False)
+        finally:
+            excel.Quit()
+        return out.exists()
+    except Exception:
+        return False
+
+
+def read_sheet_rows(src: str | Path, max_rows: int = 5000) -> list[list[str]]:
+    src = Path(src)
+    ext = src.suffix.lower()
+    rows: list[list[str]] = []
+    if ext in (".xlsx", ".xlsm"):
+        import openpyxl
+        wb = openpyxl.load_workbook(src, read_only=True, data_only=True)
+        sheet = wb.active
+        for i, row in enumerate(sheet.iter_rows(values_only=True)):
+            if i >= max_rows:
+                break
+            row_vals = ["" if v is None else str(v).strip() for v in row]
+            if any(row_vals):
+                rows.append(row_vals)
+        wb.close()
+    elif ext == ".csv":
+        import csv
+        raw = src.read_bytes()
+        encoding = "utf-8"
+        for enc in ("utf-8-sig", "utf-8", "cp1252", "latin-1"):
+            try:
+                raw.decode(enc)
+                encoding = enc
+                break
+            except UnicodeDecodeError:
+                continue
+        text = raw.decode(encoding, "replace")
+        sample = text[:4096]
+        try:
+            dialect = csv.Sniffer().sniff(sample)
+            delim = dialect.delimiter
+        except Exception:
+            delim = ";" if ";" in sample and "," not in sample else ","
+        reader = csv.reader(text.splitlines(), delimiter=delim)
+        for i, row in enumerate(reader):
+            if i >= max_rows:
+                break
+            if any(c.strip() for c in row):
+                rows.append([c.strip() for c in row])
+    elif ext == ".xls":
+        # If openpyxl or xlrd is not present, fall back to COM or empty
+        pass
+    return rows
+
+
+def sheet_to_pdf(src: str | Path) -> list[Path]:
+    src = Path(src)
+    out = sibling(src, ext=".pdf")
+    if not _excel_to_pdf(src, out):
+        rows = read_sheet_rows(src)
+        if not rows:
+            raise UserError("A planilha está vazia ou não pôde ser lida.")
+        html_rows = []
+        for i, r in enumerate(rows):
+            tag = "th" if i == 0 else "td"
+            cells = "".join(f"<{tag}>{html.escape(c)}</{tag}>" for c in r)
+            html_rows.append(f"<tr>{cells}</tr>")
+        table_html = f"<h2>{html.escape(src.stem)}</h2><table>{''.join(html_rows)}</table>"
+        story = fitz.Story(html=table_html, user_css=SHEET_CSS)
+        writer = fitz.DocumentWriter(str(out))
+        num_cols = max(len(r) for r in rows) if rows else 1
+        mediabox = fitz.paper_rect("letter-l") if num_cols > 4 else fitz.paper_rect("letter")
+        where = mediabox + (36, 36, -36, -36)
+        more = True
+        while more:
+            dev = writer.begin_page(mediabox)
+            more, _ = story.place(where)
+            story.draw(dev)
+            writer.end_page()
+        writer.close()
+    return [out]
+
+
+def sheet_to_csv(src: str | Path) -> list[Path]:
+    import csv
+    src = Path(src)
+    rows = read_sheet_rows(src)
+    if not rows:
+        raise UserError("A planilha está vazia.")
+    out = sibling(src, ext=".csv")
+    with open(out, "w", encoding="utf-8-sig", newline="") as f:
+        writer = csv.writer(f, delimiter=";")
+        writer.writerows(rows)
+    return [out]
+
+
+def csv_to_xlsx(src: str | Path) -> list[Path]:
+    src = Path(src)
+    rows = read_sheet_rows(src)
+    if not rows:
+        raise UserError("O arquivo CSV está vazio.")
+    out = sibling(src, ext=".xlsx")
+    import openpyxl
+    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = src.stem[:31]
+
+    header_fill = PatternFill(start_color="2563EB", end_color="2563EB", fill_type="solid")
+    header_font = Font(name="Segoe UI", size=11, bold=True, color="FFFFFF")
+    data_font = Font(name="Segoe UI", size=10)
+    border_side = Side(border_style="thin", color="CBD5E1")
+    cell_border = Border(left=border_side, right=border_side, top=border_side, bottom=border_side)
+
+    for row_idx, row in enumerate(rows, start=1):
+        for col_idx, val in enumerate(row, start=1):
+            cell = ws.cell(row=row_idx, column=col_idx, value=val)
+            cell.border = cell_border
+            if row_idx == 1:
+                cell.fill = header_fill
+                cell.font = header_font
+                cell.alignment = Alignment(horizontal="center", vertical="center")
+            else:
+                cell.font = data_font
+
+    for col in ws.columns:
+        max_len = max(len(str(cell.value or "")) for cell in col)
+        col_letter = col[0].column_letter
+        ws.column_dimensions[col_letter].width = max(12, min(50, max_len + 3))
+
+    wb.save(out)
+    wb.close()
+    return [out]
+
+
+def sheet_to_json(src: str | Path) -> list[Path]:
+    import json
+    src = Path(src)
+    rows = read_sheet_rows(src)
+    if not rows:
+        raise UserError("O arquivo está vazio.")
+    headers = rows[0]
+    data = []
+    for r in rows[1:]:
+        row_dict = {headers[i] if i < len(headers) and headers[i] else f"col_{i+1}": (r[i] if i < len(r) else "") for i in range(len(r))}
+        data.append(row_dict)
+    out = sibling(src, ext=".json")
+    out.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    return [out]
+
+
+def sheet_to_html(src: str | Path) -> list[Path]:
+    src = Path(src)
+    rows = read_sheet_rows(src)
+    if not rows:
+        raise UserError("O arquivo está vazio.")
+    out = sibling(src, ext=".html")
+    html_rows = []
+    for i, r in enumerate(rows):
+        tag = "th" if i == 0 else "td"
+        cells = "".join(f"<{tag}>{html.escape(c)}</{tag}>" for c in r)
+        html_rows.append(f"<tr>{cells}</tr>")
+
+    content = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>{html.escape(src.stem)}</title>
+<style>
+body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 24px; background: #f8fafc; color: #1e293b; }}
+h2 {{ font-size: 20px; margin-bottom: 16px; color: #0f172a; }}
+.card {{ background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #e2e8f0; }}
+table {{ border-collapse: collapse; width: 100%; text-align: left; font-size: 13px; }}
+th {{ background: #2563eb; color: white; padding: 10px 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }}
+td {{ padding: 10px 14px; border-bottom: 1px solid #e2e8f0; }}
+tr:nth-child(even) {{ background: #f8fafc; }}
+tr:hover {{ background: #eff6ff; }}
+</style>
+</head>
+<body>
+<h2>{html.escape(src.stem)}</h2>
+<div class="card">
+<table>
+{''.join(html_rows)}
+</table>
+</div>
+</body>
+</html>
+"""
+    out.write_text(content, encoding="utf-8")
+    return [out]
+
+
+def sheet_to(src: str | Path, target: str) -> list[Path]:
+    target = target.upper()
+    if target == "PDF":
+        return sheet_to_pdf(src)
+    if target == "CSV":
+        return sheet_to_csv(src)
+    if target == "XLSX":
+        return csv_to_xlsx(src)
+    if target == "JSON":
+        return sheet_to_json(src)
+    if target == "HTML":
+        return sheet_to_html(src)
+    raise ValueError(f"Can't convert spreadsheet to {target}")
+
 # ---------------------------------------------------------------- dispatch
-def targets_for(cat: str, src_ext: str) -> list[str]:
+def targets_for(cat: str, src_ext: str, num_files: int = 1) -> list[str]:
     src_ext = src_ext.lower().lstrip(".")
     same = {"jpeg": "JPG", "jpg": "JPG", "tif": "TIFF", "tiff": "TIFF", "heif": "HEIC"}
     cur = same.get(src_ext, src_ext.upper())
@@ -361,14 +592,32 @@ def targets_for(cat: str, src_ext: str) -> list[str]:
         t = [x for x in IMAGE_TARGETS if x != cur]
         if not HEIF_OK:
             t = [x for x in t if x != "HEIC"]
+        if num_files > 1:
+            out = []
+            for item in t:
+                if item == "PDF":
+                    out.extend(["PDF (1 doc)", "PDF (sep)"])
+                else:
+                    out.append(item)
+            return out
         return t
+    if cat == "sheet":
+        if src_ext in ("xlsx", "xls", "xlsm"):
+            return ["PDF", "CSV", "JSON", "HTML"]
+        if src_ext == "csv":
+            return ["XLSX", "PDF", "JSON", "HTML"]
+        return ["PDF", "CSV", "JSON"]
     return {"pdf": PDF_TARGETS, "docx": DOCX_TARGETS, "text": TEXT_TARGETS}.get(cat, [])
 
 
 def convert(src: str | Path, cat: str, target: str) -> list[Path]:
     target = target.upper()
     if cat == "image":
+        if target in ("PDF (SEP)", "PDF"):
+            return image_to(src, "PDF")
         return image_to(src, target)
+    if cat == "sheet":
+        return sheet_to(src, target)
     if cat == "pdf":
         if target in ("JPG", "PNG"):
             return pdf_to_images(src, target)
@@ -381,3 +630,4 @@ def convert(src: str | Path, cat: str, target: str) -> list[Path]:
     if cat == "text":
         return text_to_pdf(src) if target == "PDF" else text_to_docx(src)
     raise ValueError(f"Can't convert {cat} to {target}")
+

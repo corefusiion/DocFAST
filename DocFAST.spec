@@ -1,5 +1,6 @@
-# PyInstaller spec. ONEFILE=1 -> portable single exe; otherwise a folder for the installer.
+# PyInstaller spec for DocFAST. ONEFILE=1 -> portable single exe; otherwise a folder for the installer.
 import os
+import sys
 from PyInstaller.utils.hooks import collect_all
 
 onefile = os.environ.get("ONEFILE") == "1"
@@ -7,7 +8,7 @@ heif_datas, heif_bins, heif_hidden = collect_all("pillow_heif")
 
 a = Analysis(
     ["run.py"],
-    datas=[("dragshift/assets", "dragshift/assets")] + heif_datas,
+    datas=[("docfast/assets", "docfast/assets")] + heif_datas,
     binaries=heif_bins,
     hiddenimports=["win32com.client", "PySide6.QtNetwork", "AppKit", "Quartz", "objc"] + heif_hidden,
     excludes=["tkinter", "PySide6.QtWebEngineCore", "PySide6.QtWebEngineWidgets", "PySide6.QtQml",
@@ -26,35 +27,33 @@ a.binaries = [b for b in a.binaries if not any(d.lower() in b[0].lower() for d i
 a.datas = [d for d in a.datas if "translations" not in d[0].replace("\\", "/")]
 
 pyz = PYZ(a.pure)
-import sys
 IS_MAC = sys.platform == "darwin"
-common = dict(name="DragShift", console=False, upx=False)
+common = dict(name="DocFAST", console=False, upx=False)
 IS_LINUX = sys.platform.startswith("linux")
 if IS_MAC:
-    common.update(icon="dragshift/assets/dragshift.icns")
+    common.update(icon="docfast/assets/docfast.icns")
 elif IS_LINUX:
-    common.update(name="dragshift")       # icon comes from the .desktop file / hicolor theme
+    common.update(name="docfast")
 else:
-    common.update(icon="dragshift/assets/dragshift.ico", version="installer/version_info.txt")
+    common.update(icon="docfast/assets/docfast.ico", version="installer/version_info.txt")
 
 if IS_MAC:
     exe = EXE(pyz, a.scripts, [], exclude_binaries=True, argv_emulation=False, **common)
-    coll = COLLECT(exe, a.binaries, a.datas, name="DragShift", upx=False)
+    coll = COLLECT(exe, a.binaries, a.datas, name="DocFAST", upx=False)
     app = BUNDLE(
         coll,
-        name="DragShift.app",
-        icon="dragshift/assets/dragshift.icns",
-        bundle_identifier="com.dragshift.app",
+        name="DocFAST.app",
+        icon="docfast/assets/docfast.icns",
+        bundle_identifier="com.docfast.app",
         info_plist={
-            "CFBundleName": "DragShift",
-            "CFBundleDisplayName": "DragShift",
+            "CFBundleName": "DocFAST",
+            "CFBundleDisplayName": "DocFAST",
             "CFBundleShortVersionString": "1.1.0",
             "CFBundleVersion": "1.1.0",
-            "LSUIElement": True,                 # menu-bar app, no Dock icon
+            "LSUIElement": True,
             "LSMinimumSystemVersion": "11.0",
             "NSHighResolutionCapable": True,
             "NSRequiresAquaSystemAppearance": False,
-            # show up in Finder's "Open With" for any file, and accept drops on the app icon
             "CFBundleDocumentTypes": [{
                 "CFBundleTypeName": "Any file",
                 "CFBundleTypeRole": "Viewer",
@@ -65,9 +64,9 @@ if IS_MAC:
     )
 elif IS_LINUX:
     exe = EXE(pyz, a.scripts, [], exclude_binaries=True, **common)
-    coll = COLLECT(exe, a.binaries, a.datas, name="dragshift", upx=False)  # no strip: breaks OpenBLAS with Debian 12 binutils
+    coll = COLLECT(exe, a.binaries, a.datas, name="docfast", upx=False)
 elif onefile:
     exe = EXE(pyz, a.scripts, a.binaries, a.datas, [], **common)
 else:
     exe = EXE(pyz, a.scripts, [], exclude_binaries=True, **common)
-    coll = COLLECT(exe, a.binaries, a.datas, name="DragShift", upx=False)
+    coll = COLLECT(exe, a.binaries, a.datas, name="DocFAST", upx=False)

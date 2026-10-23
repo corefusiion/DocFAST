@@ -7,8 +7,9 @@ from pathlib import Path
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".heic", ".heif", ".tif", ".tiff",
               ".avif", ".bmp", ".gif", ".ico"}
 PDF_EXTS = {".pdf"}
+SHEET_EXTS = {".xlsx", ".xls", ".csv"}
 DOCX_EXTS = {".docx"}
-TEXT_EXTS = {".txt", ".md", ".csv", ".log", ".json", ".xml", ".html", ".htm"}
+TEXT_EXTS = {".txt", ".md", ".log", ".json", ".xml", ".html", ".htm"}
 
 
 def category(path: str | Path) -> str | None:
@@ -17,6 +18,8 @@ def category(path: str | Path) -> str | None:
         return "image"
     if ext in PDF_EXTS:
         return "pdf"
+    if ext in SHEET_EXTS:
+        return "sheet"
     if ext in DOCX_EXTS:
         return "docx"
     if ext in TEXT_EXTS:
@@ -61,7 +64,7 @@ class UserError(Exception):
 
 # Runtime options (filled from Settings at start-up; plain values so worker threads can read them)
 CONFIG = {
-    "output": "next",        # "next" = beside the original, "folder" = a "DragShift" subfolder
+    "output": "next",        # "next" = beside the original, "folder" = a "DocFAST" subfolder
     "jpg_quality": 90,
     "pdf_dpi": 200,
 }
@@ -70,7 +73,7 @@ CONFIG = {
 def output_dir(src: str | Path) -> Path:
     d = Path(src).parent
     if CONFIG.get("output") == "folder":
-        d = d / "DragShift"
+        d = d / "DocFAST"
         d.mkdir(exist_ok=True)
     return d
 

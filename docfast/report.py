@@ -73,7 +73,11 @@ def summarize(action: str, srcs: list, outs: list, extra: str = "") -> Result:
 
     if kind == "convert":
         fmt = name
-        if len(srcs) > 1 and len(outs) == 1:
+        if fmt == "PDF (1 doc)":
+            title = f"{len(srcs)} imagens → 1 PDF"
+        elif fmt == "PDF (sep)":
+            title = f"{len(outs)} imagens → {len(outs)} PDFs individuais"
+        elif len(srcs) > 1 and len(outs) == 1:
             title = f"{len(srcs)} files → 1 {fmt}"
         elif len(outs) > 1 and len(srcs) == 1:
             n = pages(src)
