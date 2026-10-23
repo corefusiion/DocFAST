@@ -275,7 +275,7 @@ def docx_to_txt(src: str | Path) -> list[Path]:
 
 def _word_to_pdf(src: Path, out: Path) -> bool:
     """Use Microsoft Word (if installed) for a perfect-fidelity export."""
-    if sys.platform != "win32":
+    if sys.platform != "win32" or os.environ.get("CI") or os.environ.get("GITHUB_ACTIONS"):
         return False
     try:
         import win32com.client  # type: ignore
