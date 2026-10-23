@@ -89,39 +89,6 @@ jobs:
             dist/DocFAST.exe
             dist/DocFAST-Setup.exe
 
-      # Test-mode SignPath code signing: the unsigned executables are uploaded
-      # as a ZIP artifact (upload-artifact archives by default, matching the
-      # zip-file root of the SignPath artifact configuration), a test-signing
-      # request is submitted and awaited, then the unsigned artifact is deleted
-      # again so the release keeps publishing exactly what it published before.
-      - name: Upload unsigned artifact for SignPath
-        if: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
-        id: upload-unsigned-artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: unsigned
-          path: |
-            dist/DocFAST.exe
-            dist/DocFAST-Setup.exe
-
-      - name: Submit test signing request to SignPath
-        if: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
-        uses: signpath/github-action-submit-signing-request@v3
-        with:
-          api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
-          organization-id: '9db07b33-5f87-47ac-b187-3dd1dfad5744'
-          project-slug: 'DocFAST'
-          signing-policy-slug: 'test-signing'
-          artifact-configuration-slug: 'zip-with-signed-executables'
-          github-artifact-id: '${{ steps.upload-unsigned-artifact.outputs.artifact-id }}'
-          wait-for-completion: true
-          output-artifact-directory: 'signed'
-
-      - name: Delete unsigned artifact
-        if: always() && secrets.SIGNPATH_API_TOKEN != '' && steps.upload-unsigned-artifact.outputs.artifact-id != ''
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/${{ steps.upload-unsigned-artifact.outputs.artifact-id }}"
 
   macos:
     strategy:
