@@ -164,7 +164,7 @@ O DocFAST é um software de código aberto, livre para uso pessoal e comercial. 
 
 <div align="center">
 
-[![Doação e Apoio](https://img.shields.io/badge/Apoiar%20o%20Desenvolvedor-docfastbr.lovable.app-2563EB?style=for-the-badge&logo=heart&logoColor=white)](https://docfastbr.lovable.app/)
+[![Doação e Apoio](https://img.shields.io/badge/Apoiar%20o%20Desenvolvedor-docfastbr.app-2563EB?style=for-the-badge&logo=heart&logoColor=white)](https://docfastbr.lovable.app/)
 
 👉 **Contribua através da nossa página oficial:** [**https://docfastbr.app/**](https://docfastbr.lovable.app/)
 
