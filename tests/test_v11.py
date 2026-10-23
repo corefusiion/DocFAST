@@ -35,7 +35,7 @@ def test_compress_target_size(tmp_path):
     out = imaging.compress_to(p, q, side, "JPG")
     assert out.stat().st_size <= 200_000
     r = report.summarize("tool:Compress", [p], [out], "target 200 KB")
-    assert "smaller" in r.good and "→" in r.detail
+    assert ("smaller" in r.good or "menor" in r.good) and "→" in r.detail
 
 
 def test_compress_png_and_webp(tmp_path):
@@ -93,9 +93,9 @@ def test_protect_and_extract(tmp_path):
     imgs = imaging.extract_pdf_images(pdf)
     assert len(imgs) == 1 and imgs[0].parent.name == "Doc images"
     r = report.summarize("tool:Extract", [pdf], imgs)
-    assert r.title == "Extracted 1 image"
+    assert r.title in ("Extracted 1 image", "Extraída 1 imagem")
     r = report.summarize("convert:JPG", [pdf], convert.convert(pdf, "pdf", "JPG"))
-    assert r.title == "3 pages → 3 JPGs"
+    assert r.title in ("3 pages → 3 JPGs", "3 páginas → 3 JPGs")
 
 
 def test_output_folder_setting(tmp_path):

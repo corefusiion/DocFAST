@@ -25,6 +25,7 @@ DEFAULTS = {
     "pdf_dpi": 200,
     "trigger": "shift",
     "language": "pt_BR",
+    "theme": "aurora",
     "welcomed": False,
 }
 
@@ -34,8 +35,8 @@ class Settings:
         self.q = QSettings(APP, APP)
 
     def get(self, key):
-        v = self.q.value(key, DEFAULTS[key])
-        d = DEFAULTS[key]
+        v = self.q.value(key, DEFAULTS.get(key))
+        d = DEFAULTS.get(key)
         if isinstance(d, bool):
             return v in (True, "true", "1", 1)
         if isinstance(d, int):
@@ -53,6 +54,8 @@ class Settings:
         for k in ("output", "jpg_quality", "pdf_dpi"):
             CONFIG[k] = self.get(k)
         set_language(self.get("language"))
+        from . import glass
+        glass.set_theme(self.get("theme"))
 
 
 # ---------------------------------------------------------------- autostart (Windows)
@@ -104,8 +107,6 @@ def set_autostart(on: bool):
 
 TRIGGERS = ([("shift", "Shift ⇧"), ("ctrl", "Control ⌃"), ("alt", "Option ⌥")] if IS_MAC
             else [("shift", "Shift"), ("ctrl", "Ctrl"), ("alt", "Alt")])
-OUTPUTS = [("next", "Next to the original"), ("folder", "In a “DocFAST” subfolder")]
-DPIS = [(150, "150 dpi · small"), (200, "200 dpi · balanced"), (300, "300 dpi · print")]
 LANGS = [("pt_BR", "Português (Brasil)"), ("en", "English")]
 
 
@@ -113,7 +114,7 @@ class SettingsWindow(GlassWindow):
     changed = Signal()
 
     def __init__(self, settings: Settings):
-        super().__init__("Settings", size=(520, 470))
+        super().__init__(t("settings_title"), size=(540, 520))
         self.s = settings
         grid = QGridLayout()
         grid.setHorizontalSpacing(14)
@@ -128,23 +129,41 @@ class SettingsWindow(GlassWindow):
             c.setCurrentIndex(idx)
             return c
 
-        grid.addWidget(QLabel("Open the menu with"), r, 0)
+        grid.addWidget(QLabel(t("settings_trigger")), r, 0)
         self.trigger = combo(TRIGGERS, self.s.get("trigger"))
         self.trigger.currentIndexChanged.connect(lambda _: self._save("trigger", self.trigger.currentData()))
         grid.addWidget(self.trigger, r, 1)
         r += 1
-        hint = QLabel("…pressed while you’re dragging a file")
+        hint = QLabel(t("settings_trigger_hint"))
         hint.setObjectName("dim")
         grid.addWidget(hint, r, 1)
         r += 1
 
-        grid.addWidget(QLabel("Save results"), r, 0)
-        self.output = combo(OUTPUTS, self.s.get("output"))
+        outputs = [
+            ("next", t("settings_save_next")),
+            ("folder", t("settings_save_subfolder")),
+        ]
+        grid.addWidget(QLabel(t("settings_save")), r, 0)
+        self.output = combo(outputs, self.s.get("output"))
         self.output.currentIndexChanged.connect(lambda _: self._save("output", self.output.currentData()))
         grid.addWidget(self.output, r, 1)
         r += 1
 
-        grid.addWidget(QLabel("JPG / WebP quality"), r, 0)
+        # Theme selection (5 soft liquid-glass colors)
+        themes = [
+            ("aurora", t("theme_aurora")),
+            ("dark", t("theme_dark")),
+            ("slate", t("theme_slate")),
+            ("blue", t("theme_blue")),
+            ("mint", t("theme_mint")),
+        ]
+        grid.addWidget(QLabel(t("settings_theme")), r, 0)
+        self.theme = combo(themes, self.s.get("theme"))
+        self.theme.currentIndexChanged.connect(self._theme_changed)
+        grid.addWidget(self.theme, r, 1)
+        r += 1
+
+        grid.addWidget(QLabel(t("settings_quality")), r, 0)
         row = QHBoxLayout()
         self.q = QSlider(Qt.Horizontal)
         self.q.setRange(60, 100)
@@ -158,20 +177,26 @@ class SettingsWindow(GlassWindow):
         grid.addLayout(row, r, 1)
         r += 1
 
-        grid.addWidget(QLabel("PDF → image resolution"), r, 0)
-        self.dpi = combo(DPIS, self.s.get("pdf_dpi"))
+        dpis = [
+            (150, t("settings_dpi_150")),
+            (200, t("settings_dpi_200")),
+            (300, t("settings_dpi_300")),
+        ]
+        grid.addWidget(QLabel(t("settings_pdf_dpi")), r, 0)
+        self.dpi = combo(dpis, self.s.get("pdf_dpi"))
         self.dpi.currentIndexChanged.connect(lambda _: self._save("pdf_dpi", self.dpi.currentData()))
         grid.addWidget(self.dpi, r, 1)
         r += 1
 
-        grid.addWidget(QLabel("Idioma / Language"), r, 0)
+        grid.addWidget(QLabel(t("settings_lang")), r, 0)
         self.lang = combo(LANGS, self.s.get("language"))
         self.lang.currentIndexChanged.connect(lambda _: self._save("language", self.lang.currentData()))
         grid.addWidget(self.lang, r, 1)
         r += 1
 
         if IS_WIN or IS_MAC or IS_LINUX:
-            self.auto = QCheckBox("Start DocFAST with Windows" if IS_WIN else "Open DocFAST at login")
+            autostart_label = t("settings_autostart") if IS_WIN else t("settings_autostart_mac")
+            self.auto = QCheckBox(autostart_label)
             self.auto.setChecked(autostart_enabled())
             self.auto.toggled.connect(set_autostart)
             grid.addWidget(self.auto, r, 1)
@@ -186,16 +211,21 @@ class SettingsWindow(GlassWindow):
                 r += 1
         self.body.addLayout(grid)
         self.body.addStretch(1)
-        about = QLabel(f"DocFAST {__version__}  ·  Criado por Gleisson Santos")
+        about = QLabel(t("settings_author_credit", version=__version__))
         about.setObjectName("dim")
         foot = QHBoxLayout()
         foot.addWidget(about)
         foot.addStretch(1)
-        done = QPushButton("Done")
+        done = QPushButton(t("settings_btn_done"))
         done.setObjectName("primary")
         done.clicked.connect(self.close)
         foot.addWidget(done)
         self.body.addLayout(foot)
+
+    def _theme_changed(self, _):
+        val = self.theme.currentData()
+        self._save("theme", val)
+        self.update()
 
     def _save(self, key, value):
         self.s.set(key, value)
@@ -204,14 +234,13 @@ class SettingsWindow(GlassWindow):
 
 class WelcomeWindow(GlassWindow):
     def __init__(self, settings: Settings, trigger_label: str = "Shift"):
-        super().__init__("Welcome to DocFAST", size=(560, 430))
+        super().__init__(t("welcome_title"), size=(560, 440))
         self.s = settings
         steps = [
-            ("1", "Start dragging any file", "in Finder or on the desktop" if IS_MAC else
-             "in your file manager (Thunar, Nautilus…)" if IS_LINUX else "in File Explorer or on the desktop"),
-            ("2", f"Press {trigger_label}", "the glass menu opens right under your cursor"),
-            ("3", "Drop it on a slice", "the result is saved next to the original"),
-            ("⇄", f"Tap {trigger_label} again", "to switch between Convert and Tools"),
+            ("1", t("welcome_step1_head"), t("welcome_step1_sub")),
+            ("2", t("welcome_step2_head", trigger=trigger_label), t("welcome_step2_sub")),
+            ("3", t("welcome_step3_head"), t("welcome_step3_sub")),
+            ("⇄", t("welcome_step4_head", trigger=trigger_label), t("welcome_step4_sub")),
         ]
         for n, head, sub in steps:
             row = QHBoxLayout()
@@ -254,11 +283,12 @@ class WelcomeWindow(GlassWindow):
                 self.body.addWidget(note)
         foot = QHBoxLayout()
         if IS_WIN or IS_MAC or IS_LINUX:
-            self.auto = QCheckBox("Start with Windows" if IS_WIN else "Open at login")
+            autostart_label = t("settings_autostart") if IS_WIN else t("settings_autostart_mac")
+            self.auto = QCheckBox(autostart_label)
             self.auto.setChecked(True)
             foot.addWidget(self.auto)
         foot.addStretch(1)
-        ok = QPushButton("Got it")
+        ok = QPushButton(t("welcome_btn_ok"))
         ok.setObjectName("primary")
         ok.clicked.connect(self._done)
         foot.addWidget(ok)

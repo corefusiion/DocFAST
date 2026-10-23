@@ -19,6 +19,71 @@ ACCENT_A = "#5ac8ff"
 ACCENT_B = "#2f7bff"
 ACCENT_C = "#5b5bff"
 
+THEMES = {
+    "aurora": {
+        "name_key": "theme_aurora",
+        "radial": QColor(22, 18, 34, 65),
+        "hub": QColor(22, 18, 34, 80),
+        "window": QColor(22, 17, 34, 150),
+        "toast": QColor(20, 16, 32, 120),
+        "rainbow_alpha": 140,
+    },
+    "dark": {
+        "name_key": "theme_dark",
+        "radial": QColor(10, 10, 14, 110),
+        "hub": QColor(10, 10, 14, 130),
+        "window": QColor(14, 14, 18, 175),
+        "toast": QColor(14, 14, 18, 145),
+        "rainbow_alpha": 80,
+    },
+    "slate": {
+        "name_key": "theme_slate",
+        "radial": QColor(42, 46, 54, 90),
+        "hub": QColor(42, 46, 54, 110),
+        "window": QColor(36, 40, 48, 155),
+        "toast": QColor(36, 40, 48, 130),
+        "rainbow_alpha": 95,
+    },
+    "blue": {
+        "name_key": "theme_blue",
+        "radial": QColor(18, 38, 64, 85),
+        "hub": QColor(18, 38, 64, 105),
+        "window": QColor(16, 34, 58, 150),
+        "toast": QColor(16, 34, 58, 125),
+        "rainbow_alpha": 110,
+    },
+    "mint": {
+        "name_key": "theme_mint",
+        "radial": QColor(18, 48, 42, 85),
+        "hub": QColor(18, 48, 42, 105),
+        "window": QColor(16, 42, 38, 150),
+        "toast": QColor(16, 42, 38, 125),
+        "rainbow_alpha": 100,
+    },
+}
+
+CURRENT_THEME = "aurora"
+
+
+def set_theme(theme_name: str):
+    global CURRENT_THEME
+    if theme_name in THEMES:
+        CURRENT_THEME = theme_name
+
+
+def get_theme() -> str:
+    return CURRENT_THEME
+
+
+def current_theme_tint(kind: str = "radial") -> QColor:
+    theme = THEMES.get(CURRENT_THEME, THEMES["aurora"])
+    return theme.get(kind, theme["radial"])
+
+
+def current_theme_rainbow() -> int:
+    theme = THEMES.get(CURRENT_THEME, THEMES["aurora"])
+    return theme.get("rainbow_alpha", 140)
+
 
 def iridescent_pen(center: QPointF, width: float, alpha: int = 200, angle: float = 30) -> QPen:
     g = QConicalGradient(center, angle)

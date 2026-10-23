@@ -20,6 +20,7 @@ from PySide6.QtWidgets import QWidget
 from . import glass
 from .util import ui_family
 from .report import Result
+from .i18n import t, get_language
 
 W, H = 380, 104
 GAP = 10
@@ -211,7 +212,10 @@ class ToastCard(QWidget):
             self.thumb = None
             self.good = ""
             bin_name = "Recycle Bin" if sys.platform == "win32" else "Trash"
-            self.info("Undone", f"Moved {n} file{'s' if n != 1 else ''} to the {bin_name}", 2500)
+            if get_language() == "pt_BR":
+                self.info(t("toast_undone"), t("toast_undone_desc", n=n), 2500)
+            else:
+                self.info("Undone", f"Moved {n} file{'s' if n != 1 else ''} to the {bin_name}", 2500)
 
     # ------------------------------------------------------------ paint
     def paintEvent(self, e):
@@ -222,12 +226,13 @@ class ToastCard(QWidget):
         path = glass.rounded_rect_path(r, 20)
         img = self.liquid.image
         err = self.state == "error"
+        theme_toast = glass.current_theme_tint("toast")
         if img is not None and not img.isNull() and img.size() == self.size():
             p.drawImage(0, 0, img)
-            tint = QColor(140, 30, 50, 150) if err else QColor(20, 16, 32, 120)
+            tint = QColor(140, 30, 50, 150) if err else theme_toast
         else:
-            tint = QColor(120, 30, 45, 230) if err else QColor(34, 27, 52, 232)
-        glass.paint_glass(p, path, tint=tint, rainbow_alpha=170)
+            tint = QColor(120, 30, 45, 230) if err else theme_toast
+        glass.paint_glass(p, path, tint=tint, rainbow_alpha=glass.current_theme_rainbow())
 
         x = 16
         # leading visual: spinner / thumbnail / icon
@@ -304,7 +309,7 @@ class ToastCard(QWidget):
         self.buttons = []
         if self.state == "done" and self.result and self.result.outs:
             names = ["Open", "Show", "Undo"]
-            labels = {"Open": "Open", "Show": "Show in folder", "Undo": "Undo"}
+            labels = {"Open": t("toast_open"), "Show": t("toast_show"), "Undo": t("toast_undo")}
             f.setPixelSize(12)
             f.setBold(True)
             p.setFont(f)

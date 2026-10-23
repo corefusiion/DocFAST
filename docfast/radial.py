@@ -482,12 +482,12 @@ class RadialMenu(QWidget):
     def _paint_fallback(self, p: QPainter, c: QPointF, n: int):
         hub = QPainterPath()
         hub.addEllipse(c, R_HUB, R_HUB)
-        glass.paint_glass(p, hub, self.backdrop, QPointF(0, 0), tint=QColor(22, 18, 34, 80),
-                          rainbow_alpha=150, highlight=1.3)
+        glass.paint_glass(p, hub, self.backdrop, QPointF(0, 0), tint=glass.current_theme_tint("hub"),
+                          rainbow_alpha=glass.current_theme_rainbow(), highlight=1.3)
         for i in range(n):
             a0, a1 = angles(n, i)
             glass.paint_glass(p, sector_path(c, R_IN, R_OUT, a0, a1), self.backdrop, QPointF(0, 0),
-                              tint=QColor(22, 18, 34, 62), rainbow_alpha=140)
+                              tint=glass.current_theme_tint("radial"), rainbow_alpha=glass.current_theme_rainbow())
 
     def _paint_hover(self, p: QPainter, c: QPointF, a0: float, a1: float, h: float, img: QImage | None):
         mid = math.radians((a0 + a1) / 2)
@@ -508,8 +508,8 @@ class RadialMenu(QWidget):
             p.drawImage(0, 0, img)
             p.restore()
         else:
-            glass.paint_glass(p, path, self.backdrop, QPointF(0, 0), tint=QColor(22, 18, 34, 62),
-                              rainbow_alpha=140)
+            glass.paint_glass(p, path, self.backdrop, QPointF(0, 0), tint=glass.current_theme_tint("radial"),
+                              rainbow_alpha=glass.current_theme_rainbow())
         p.restore()
 
     def _paint_hub(self, p: QPainter, c: QPointF, fg: QColor, fg_dim: QColor, shadow_col: QColor):

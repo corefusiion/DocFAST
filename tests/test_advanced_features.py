@@ -36,15 +36,46 @@ def test_i18n_translations():
     assert t("ring_convert") == "Converter"
     assert t("tool_sign") == "Assinar / Carimbar"
     assert t("tool_organize") == "Organizar Páginas"
+    assert t("toast_open") == "Abrir"
+    assert t("toast_show") == "Mostrar na pasta"
+    assert t("toast_undo") == "Desfazer"
+    assert t("theme_aurora") == "Aurora Violeta (Padrão)"
+    assert t("theme_dark") == "Preto Transparente Glass (Dark)"
+    assert t("theme_slate") == "Cinza Suave Translúcido (Slate)"
+    assert t("theme_blue") == "Azul Fraco Suave (Sky Blue)"
+    assert t("theme_mint") == "Verde Menta Suave (Mint Frost)"
 
     set_language("en")
     assert get_language() == "en"
     assert t("ring_convert") == "Convert"
     assert t("tool_sign") == "Sign / Stamp"
     assert t("tool_organize") == "Organize Pages"
+    assert t("toast_open") == "Open"
+    assert t("toast_show") == "Show in folder"
+    assert t("toast_undo") == "Undo"
 
     # Reset to default pt_BR
     set_language("pt_BR")
+
+
+def test_theme_color_selection():
+    from docfast import glass
+    assert "aurora" in glass.THEMES
+    assert "dark" in glass.THEMES
+    assert "slate" in glass.THEMES
+    assert "blue" in glass.THEMES
+    assert "mint" in glass.THEMES
+
+    glass.set_theme("blue")
+    assert glass.get_theme() == "blue"
+    tint = glass.current_theme_tint("window")
+    assert tint.isValid()
+
+    glass.set_theme("dark")
+    assert glass.get_theme() == "dark"
+
+    glass.set_theme("aurora")
+    assert glass.get_theme() == "aurora"
 
 
 def test_signature_background_removal(sample_signature):

@@ -132,13 +132,14 @@ class GlassWindow(QWidget):
         r = QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5)
         path = glass.rounded_rect_path(r, self.radius)
         img = self.liquid.image
+        theme_win = glass.current_theme_tint("window")
         if img is not None and not img.isNull() and img.size() == self.size():
             p.drawImage(0, 0, img)
             # large surfaces need more opacity than a menu so content stays readable
-            glass.paint_glass(p, path, tint=QColor(22, 17, 34, 150), rainbow_alpha=150)
+            glass.paint_glass(p, path, tint=theme_win, rainbow_alpha=glass.current_theme_rainbow())
         else:
-            tint = QColor(30, 24, 44, 125) if self._acrylic else QColor(38, 30, 56, 228)
-            glass.paint_glass(p, path, tint=tint, rainbow_alpha=150)
+            tint = theme_win
+            glass.paint_glass(p, path, tint=tint, rainbow_alpha=glass.current_theme_rainbow())
 
 
 class ImageView(QWidget):
