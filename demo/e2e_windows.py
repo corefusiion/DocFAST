@@ -553,7 +553,7 @@ def main():
         run("DOCX → TXT", "explorer", ["Letter.docx"], "Convert", "TXT", v_format("TXT", ".txt"))
         run("TXT → PDF", "explorer", ["Notes.txt"], "Convert", "PDF", v_format("PDF", ".pdf"))
         run("TXT → DOCX", "explorer", ["Notes.txt"], "Convert", "DOCX", v_format("DOCX", ".docx"))
-        run("2 images → 1 PDF", "explorer", ["Photo.jpg", "Second.jpg"], "Convert", "PDF", v_combined,
+        run("2 images → 1 PDF", "explorer", ["Photo.jpg", "Second.jpg"], "Convert", "PDF (1 doc)", v_combined,
             select_extra=True)
         # ---- image tools
         run("Compress to 200 KB", "explorer", ["Photo.jpg"], "Tools", "Compress", v_compress(200_000), drive_compress)
