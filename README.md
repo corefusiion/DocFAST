@@ -8,11 +8,10 @@
 *Produtividade extrema na ponta do seu cursor para Windows, macOS e Linux.*
 
 [![Build Windows](https://img.shields.io/github/actions/workflow/status/corefusiion/DocFAST/build.yml?branch=main&style=for-the-badge&label=Build%20Windows&logo=github)](https://github.com/corefusiion/DocFAST/actions)
-[![Versão](https://img.shields.io/badge/versão-1.1.0--PRO-blue.svg?style=for-the-badge)](https://docfastbr.lovable.app/)
+[![Versão](https://img.shields.io/badge/versão-1.1.0--PRO-blue.svg?style=for-the-badge)](https://github.com/corefusiion/DocFAST/releases/latest)
 [![Licença](https://img.shields.io/badge/licença-MIT-green.svg?style=for-the-badge)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11+-3776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Plataformas](https://img.shields.io/badge/plataformas-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg?style=for-the-badge)]()
-[![Desenvolvido por](https://img.shields.io/badge/autor-Gleisson%20Santos-blueviolet.svg?style=for-the-badge)](https://docfastbr.lovable.app/)
 
 <p align="center">
   <a href="#-o-que-é-o-docfast">Sobre</a> •
