@@ -9,7 +9,7 @@ from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import (QCheckBox, QComboBox, QFrame, QGridLayout, QHBoxLayout,
                                 QLabel, QLineEdit, QPushButton, QSlider, QVBoxLayout)
 
-from . import __version__, ai_client
+from . import __version__, ai_client, system_card
 from .i18n import get_language, set_language, t
 from .util import CONFIG
 from .window import GlassWindow
@@ -31,6 +31,8 @@ DEFAULTS = {
     "ai_model": "gemini-2.5-flash",
     "ai_api_key": "",
     "ai_base_url": "http://localhost:11434/v1",
+    "system_health_notifications": False,
+    "system_health_interval_min": 60,
     "welcomed": False,
 }
 
@@ -207,6 +209,28 @@ class SettingsWindow(GlassWindow):
         grid.addWidget(self.lang, r, 1)
         r += 1
 
+        # Windows Context Menu Integration
+        if IS_WIN:
+            self.chk_ctx = QCheckBox("Exibir DocFAST no Menu de Contexto do Botão Direito do Windows")
+            self.chk_ctx.setChecked(system_card.is_windows_context_menu_registered())
+            self.chk_ctx.toggled.connect(lambda on: system_card.register_windows_context_menu(on))
+            grid.addWidget(self.chk_ctx, r, 0, 1, 2)
+            r += 1
+
+        # Periodic System Health & Disk Notifications
+        health_row = QHBoxLayout()
+        self.chk_health = QCheckBox("Alertas periódicos de Saúde do Sistema (Disco, Lixeira e Dicas)")
+        self.chk_health.setChecked(self.s.get("system_health_notifications"))
+        self.chk_health.toggled.connect(lambda on: self._save("system_health_notifications", on))
+        health_row.addWidget(self.chk_health)
+
+        intervals = [("30", "A cada 30 min"), ("60", "A cada 1 hora"), ("120", "A cada 2 horas")]
+        self.combo_interval = combo(intervals, str(self.s.get("system_health_interval_min") or "60"))
+        self.combo_interval.currentIndexChanged.connect(lambda _: self._save("system_health_interval_min", int(self.combo_interval.currentData())))
+        health_row.addWidget(self.combo_interval)
+        grid.addLayout(health_row, r, 0, 1, 2)
+        r += 1
+
         # 7. AI Settings Section
         sep = QFrame()
         sep.setFrameShape(QFrame.HLine)
@@ -369,33 +393,59 @@ class SettingsWindow(GlassWindow):
 
 class WelcomeWindow(GlassWindow):
     def __init__(self, settings: Settings, trigger_label: str = "Shift"):
-        super().__init__(t("welcome_title"), size=(560, 440))
+        super().__init__("Guia Completo de Uso · DocFAST PRO", size=(640, 600))
         self.s = settings
-        steps = [
-            ("1", t("welcome_step1_head"), t("welcome_step1_sub")),
-            ("2", t("welcome_step2_head", trigger=trigger_label), t("welcome_step2_sub")),
-            ("3", t("welcome_step3_head"), t("welcome_step3_sub")),
-            ("⇄", t("welcome_step4_head", trigger=trigger_label), t("welcome_step4_sub")),
+
+        subtitle = QLabel("Domine todas as funcionalidades e atalhos de alta produtividade do DocFAST:")
+        subtitle.setStyleSheet("color: #94a3b8; font-size: 10pt; margin-bottom: 6px;")
+        self.body.addWidget(subtitle)
+
+        guide_items = [
+            ("🖱️", "Menu Radial Instantâneo (Arrastar + Tecla)",
+             f"Arraste qualquer arquivo ou pasta no Windows Explorer ou Desktop e aperte a tecla <b>{trigger_label}</b>. O menu de vidro surge sob o cursor. Solte o mouse sobre a ação desejada para executar em milissegundos."),
+
+            ("⇄", "Alternar entre Conversão e Ferramentas",
+             f"Enquanto o menu radial estiver aberto na tela, toque na tecla <b>{trigger_label}</b> uma segunda vez para alternar instantaneamente entre o anel de formatos de <i>Conversão</i> e o anel de <i>Ferramentas Visuais</i>."),
+
+            ("🖱️", "Menu do Botão Direito no Windows Explorer",
+             "Clique com o botão direito em qualquer arquivo ou pasta para acionar o <b>DocFAST — Menu Radial</b>, iniciar a <b>✨ Ajuda AI</b> diretamente ou escolher <b>🗜️ Compactar (Zip)</b>."),
+
+            ("🤖", "Ajuda AI & Ajuda AI Plus (Onipresente)",
+             "Selecione um texto em qualquer planilha do Excel, documento do Word, ERP ou página web e abra o chat de inteligência artificial. O modo <b>Ajuda AI Plus</b> captura a tela para analisar fórmulas, gráficos e erros visualmente."),
+
+            ("✍️", "Assinar e Organizar Contratos em PDF",
+             "Abra qualquer PDF e escolha <i>Assinar / Carimbar</i>. Desenhe sua rubrica ou carregue uma foto da assinatura (o fundo branco é removido automaticamente). Na ferramenta <i>Organizar Páginas</i>, reordene e gire páginas por arrasto."),
+
+            ("📋", "Área de Transferência Direto na Área de Trabalho",
+             "Pressione Ctrl+C em qualquer print ou texto e escolha <i>Colar da Área de Transferência</i> para salvar na sua Área de Trabalho (Desktop) em <b>TXT</b>, <b>DOCX</b> ou <b>PDF</b>."),
         ]
-        for n, head, sub in steps:
-            row = QHBoxLayout()
-            badge = QLabel(n)
+
+        for icon_symbol, title, description in guide_items:
+            card = QFrame()
+            card.setStyleSheet("background: rgba(255,255,255,0.06); border-radius: 8px; padding: 6px 10px; margin-bottom: 4px;")
+            c_lay = QHBoxLayout(card)
+            c_lay.setContentsMargins(6, 6, 6, 6)
+            c_lay.setSpacing(10)
+
+            badge = QLabel(icon_symbol)
             badge.setAlignment(Qt.AlignCenter)
-            badge.setFixedSize(34, 34)
-            badge.setStyleSheet("background: qlineargradient(x1:0,y1:0,x2:1,y2:1, stop:0 #5ac8ff, stop:1 #2f7bff);"
-                                "border-radius: 17px; font-weight: 700; font-size: 12pt;")
-            row.addWidget(badge)
-            col = QVBoxLayout()
-            col.setSpacing(0)
-            h = QLabel(head)
-            h.setStyleSheet("font-size: 12pt; font-weight: 600;")
-            d = QLabel(sub)
-            d.setObjectName("dim")
-            col.addWidget(h)
-            col.addWidget(d)
-            row.addSpacing(8)
-            row.addLayout(col, 1)
-            self.body.addLayout(row)
+            badge.setFixedSize(32, 32)
+            badge.setStyleSheet("background: rgba(90, 200, 255, 0.15); border: 1px solid rgba(90, 200, 255, 0.3); border-radius: 16px; font-size: 13pt;")
+            c_lay.addWidget(badge)
+
+            t_box = QVBoxLayout()
+            t_box.setSpacing(2)
+            lbl_title = QLabel(title)
+            lbl_title.setStyleSheet("font-size: 10pt; font-weight: 700; color: #ffffff;")
+            lbl_desc = QLabel(description)
+            lbl_desc.setWordWrap(True)
+            lbl_desc.setStyleSheet("color: #cbd5e1; font-size: 9pt; line-height: 1.3;")
+            t_box.addWidget(lbl_title)
+            t_box.addWidget(lbl_desc)
+            c_lay.addLayout(t_box, 1)
+
+            self.body.addWidget(card)
+
         self.body.addStretch(1)
 
         foot = QHBoxLayout()
@@ -405,7 +455,7 @@ class WelcomeWindow(GlassWindow):
             self.auto.setChecked(True)
             foot.addWidget(self.auto)
         foot.addStretch(1)
-        ok = QPushButton(t("welcome_btn_ok"))
+        ok = QPushButton("Entendi, vamos começar!")
         ok.setObjectName("primary")
         ok.clicked.connect(self._done)
         foot.addWidget(ok)

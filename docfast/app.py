@@ -23,6 +23,7 @@ from .trigger import DocFASTWatcher
 from .util import UserError, category, file_size, human_size, keep, release
 
 APP_NAME = "DocFAST"
+KOFI_URL = "https://ko-fi.com/corefusion"
 TIP_URL = "https://docfastbr.lovable.app/"
 AUTHOR = "Gleisson Santos"
 VERSION = __version__
@@ -180,9 +181,12 @@ class DocFASTApp(QObject):
         m.addAction("✨ Ajuda AI (Texto selecionado)", lambda: self.ask_ai_on_selection(plus=False))
         m.addAction("📸 Ajuda AI Plus (Texto + Print da Tela)", lambda: self.ask_ai_on_selection(plus=True))
         m.addSeparator()
+        m.addAction("📊 Status do Sistema & Disco", self.show_system_health)
+        m.addSeparator()
         m.addAction(t("tray_settings"), self.open_settings)
         m.addAction(t("tray_help"), self.show_welcome)
-        m.addAction(t("tray_tip"), lambda: QDesktopServices.openUrl(QUrl(TIP_URL)))
+        m.addAction("💚 Apoiar no Ko-fi…", lambda: QDesktopServices.openUrl(QUrl(KOFI_URL)))
+        m.addAction("🤍 " + t("tray_tip"), lambda: QDesktopServices.openUrl(QUrl(TIP_URL)))
         act_author = m.addAction(t("tray_author"), lambda: QDesktopServices.openUrl(QUrl(TIP_URL)))
         act_author.setToolTip("https://docfastbr.lovable.app/")
         m.addSeparator()
@@ -191,6 +195,12 @@ class DocFASTApp(QObject):
         self.tray.setContextMenu(m)
         self.tray.activated.connect(self._tray_click)
         self.tray.show()
+
+        # System health periodic timer
+        self._health_timer = QTimer(self)
+        self._health_timer.timeout.connect(self._on_periodic_health)
+        self._update_health_timer()
+        self.settings.changed.connect(self._update_health_timer)
 
     def start_snipping(self):
         if hasattr(self, "tray_menu"):
@@ -278,9 +288,15 @@ class DocFASTApp(QObject):
                 return  # incomplete: wait for more
             done["v"] = True
             files = [f for f in data.get("files", []) if os.path.exists(f)]
-            print(f"IPC: {len(files)} file(s) handed over", flush=True)
+            action = data.get("action", "menu")
+            print(f"IPC: {len(files)} file(s) handed over [action={action}]", flush=True)
             if files:
-                self.queue_files(files)
+                if action == "ai":
+                    self.ask_ai_on_files(files)
+                elif action == "zip":
+                    self.zip_files_direct(files)
+                else:
+                    self.queue_files(files)
             elif data.get("show"):
                 self.toasts.info("DocFAST is already running",
                                  f"Drag any file and press {self.trigger_label()}. It lives in the tray.")
@@ -627,6 +643,61 @@ def main(argv: list[str] | None = None) -> int:
         QTimer.singleShot(400, lambda: app.toasts.info(
             "DocFAST is running", f"Drag any file, then press {app.trigger_label()}."))
     return qapp.exec()
+
+
+
+    def show_system_health(self):
+        from .system_card import SystemHealthCard
+        if not hasattr(self, "_health_card") or self._health_card is None or self._health_card.isHidden():
+            self._health_card = SystemHealthCard()
+        self._health_card.show()
+        self._health_card.raise_()
+        self._health_card.activateWindow()
+
+    def _update_health_timer(self):
+        if self.settings.get("system_health_notifications"):
+            interval_min = int(self.settings.get("system_health_interval_min") or 60)
+            self._health_timer.start(interval_min * 60 * 1000)
+        else:
+            self._health_timer.stop()
+
+    def _on_periodic_health(self):
+        if self.settings.get("system_health_notifications"):
+            self.show_system_health()
+
+    def ask_ai_on_files(self, files: list[str]):
+        if not files:
+            return
+        p = Path(files[0])
+        from .ai_chat import AiChatWindow
+        if not hasattr(self, "_ai_chat_win") or self._ai_chat_win is None or self._ai_chat_win.isHidden():
+            self._ai_chat_win = AiChatWindow(self.settings)
+
+        cat = category(p)
+        if cat == "image":
+            from PySide6.QtGui import QPixmap
+            self._ai_chat_win._set_attached_image(QPixmap(str(p)))
+            self._ai_chat_win.input_edit.setPlainText(f"Por favor, analise esta imagem '{p.name}':")
+        elif cat in ("text", "sheet", "docx"):
+            try:
+                txt = p.read_text(encoding="utf-8", errors="ignore")[:3000]
+                self._ai_chat_win.input_edit.setPlainText(f"Por favor, analise o conteúdo de '{p.name}':\n\n```\n{txt}\n```")
+            except Exception:
+                self._ai_chat_win.input_edit.setPlainText(f"Por favor, ajude-me a analisar o arquivo '{p.name}'.")
+        else:
+            self._ai_chat_win.input_edit.setPlainText(f"Por favor, explique detalhes e operações úteis para o arquivo '{p.name}'.")
+
+        self._ai_chat_win.show()
+        self._ai_chat_win.raise_()
+        self._ai_chat_win.activateWindow()
+
+    def zip_files_direct(self, files: list[str]):
+        from . import convert
+        try:
+            res = convert.zip_files(files, compress_level=6)
+            self.toasts.created(res, ["Zip"])
+        except Exception as e:
+            self.toasts.error(f"Erro ao compactar: {e}")
 
 
 def check_text_renders():

@@ -225,3 +225,29 @@ def test_desktop_dir_and_ai_client():
     hist_p = ai_chat.history_file_path()
     assert hist_p.name == "ai_chat_history.json"
 
+
+
+def test_system_card_and_welcome():
+    from docfast import system_card
+    from docfast.settings import Settings, WelcomeWindow
+    from PySide6.QtWidgets import QApplication
+
+    qapp = QApplication.instance() or QApplication([])
+
+    # Test system stats dictionary
+    stats = system_card.get_system_stats()
+    assert "disk_free_gb" in stats
+    assert "disk_total_gb" in stats
+    assert "tip" in stats
+    assert len(stats["tip"]) > 0
+
+    # Test RotatingGear widget
+    gear = system_card.RotatingGearIcon(size=30)
+    assert gear.width() == 30
+    gear.close()
+
+    # Test WelcomeWindow detailed guide
+    s = Settings()
+    w = WelcomeWindow(s, trigger_label="Shift")
+    assert w.windowTitle() != ""
+    w.close()

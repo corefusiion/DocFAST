@@ -90,7 +90,26 @@ Arrastar Arquivo ──▶ Pressionar [Shift] ──▶ Menu Radial Projetado �
 
 ---
 
-### 8. Motor Visual Liquid-Glass com 5 Temas Suaves
+### 8. Integração com o Menu do Botão Direito do Windows (Explorer)
+* **Acesso Nativo com 1 Clique:** Sem precisar arrastar o arquivo, clique com o botão direito em qualquer documento, imagem, planilha ou pasta no Windows Explorer:
+  * 🔘 **DocFAST — Menu Radial** *(projeta o menu na posição do cursor)*
+  * ✨ **DocFAST — Ajuda AI** *(abre o chat de IA analisando o arquivo na hora)*
+  * 🗜️ **DocFAST — Compactar (Zip)** *(comprime arquivos ou pastas instantaneamente)*
+* **Ativação por Usuário:** Pode ser ativado ou desativado com uma caixa de seleção nas Configurações, sem exigir privilégios de administrador.
+
+---
+
+### 9. Diagnóstico de Serviço & Saúde do Disco (Health Card)
+* **Monitoramento do Sistema em Tempo Real:** Cartão flutuante em Liquid-Glass com uma engrenagem rotativa suave que exibe:
+  * 💾 **Espaço em Disco (C:)**: Barra visual com espaço livre e percentual utilizado.
+  * 🗑️ **Lixeira do Windows**: Contagem de arquivos e tamanho ocupado, com botão de limpeza imediata.
+  * 🧠 **Memória RAM**: Carga do sistema e memória disponível.
+  * 💡 **Dicas Rotativas de Produtividade**: Truques e atalhos para acelerar seu fluxo de trabalho.
+  * **Alertas Periódicos Opcionais:** Notificações programáveis a cada 30 min, 1h ou 2h configuráveis nas preferências.
+
+---
+
+### 10. Motor Visual Liquid-Glass com 5 Temas Suaves
 * Efeito de vidro translúcido acrílico (Windows DWM API e shaders SDF).
 * 5 Paletas de cores suaves para combinar com qualquer preferência:
   * **Aurora Violeta** *(Padrão contemporâneo)*
@@ -199,16 +218,30 @@ $env:ONEFILE="1"; pyinstaller DocFAST.spec --noconfirm
 
 ---
 
-## 👨‍💻 Créditos e Desenvolvimento
-
-* **Autor e Desenvolvedor:** **Gleisson Santos**  
-* **Repositório GitHub:** [https://github.com/corefusiion/DocFAST](https://github.com/corefusiion/DocFAST)  
-* **Portal de Distribuição e Apoio:** [https://docfastbr.lovable.app/](https://docfastbr.lovable.app/)  
-* **Licença:** Código aberto sob a licença [MIT](LICENSE).
+## 💖 Apoie o Projeto
 
 <div align="center">
 
-Se o **DocFAST** aumentou a sua produtividade diária, apoie o projeto e o desenvolvimento de novas funcionalidades através do nosso portal oficial:  
-👉 [**https://docfastbr.lovable.app/**](https://docfastbr.lovable.app/)
+Se o **DocFAST** acelerou a sua produtividade diária, economizou tempo no tratamento de documentos ou ajudou na sua rotina de trabalho, considere apoiar o desenvolvimento de novas funcionalidades através dos nossos canais oficiais:
+
+<br>
+
+<p align="center">
+  <a href="https://ko-fi.com/corefusion" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Apoiar%20no%20Ko--fi-13C296?style=for-the-badge&logo=kofi&logoColor=white" alt="Apoiar no Ko-fi" />
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://docfastbr.lovable.app/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Portal%20Oficial-DocFAST-2563EB?style=for-the-badge&logo=safari&logoColor=white" alt="Portal Oficial DocFAST" />
+  </a>
+</p>
 
 </div>
+
+---
+
+## 👨‍💻 Créditos e Licença
+
+* **Autor e Desenvolvedor:** **Gleisson Santos**  
+* **Código-Fonte:** [Repositório Oficial no GitHub](https://github.com/corefusiion/DocFAST)  
+* **Licença:** Código aberto sob a licença [MIT](LICENSE).

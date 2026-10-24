@@ -15,7 +15,8 @@ def try_handoff(argv: list[str]) -> bool:
     if "--selftest" in argv:
         return False
     files = [os.path.abspath(a) for a in argv[1:] if not a.startswith("-") and os.path.exists(a)]
-    payload = {"files": files} if files else {"show": "--quiet" not in argv}
+    action = "ai" if "--ai" in argv else ("zip" if "--zip" in argv else "menu")
+    payload = {"files": files, "action": action} if files else {"show": "--quiet" not in argv, "action": action}
     data = json.dumps(payload).encode("utf-8")
     try:
         if sys.platform == "win32":
