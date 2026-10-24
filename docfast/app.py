@@ -190,6 +190,7 @@ class DocFASTApp(QObject):
         m.addAction("📝 Nova Nota Rápida (Sticky Note)", self.open_sticky_note)
         m.addAction("📋 Histórico da Área de Transferência (Ctrl+Alt+V)", self.open_clipboard_history)
         m.addAction("🎞️ Gravar GIF da Tela (até 15s)", self.start_gif_recording)
+        m.addAction("📡 Comunicados em Rede (DSS & Equipe)", self.open_lan_broadcast_dialog)
         m.addSeparator()
         m.addAction("📊 Status do Sistema & Disco", self.show_system_health)
         m.addSeparator()
@@ -209,6 +210,17 @@ class DocFASTApp(QObject):
         # Clipboard history listener & Sticky Notes restore
         ClipboardHistoryManager.get_instance().attach_listener()
         QTimer.singleShot(600, StickyNoteWindow.restore_all)
+
+        # LAN Broadcast listener & Scheduler
+        from .lan_broadcast import LanBroadcastListener
+        self.lan_listener = LanBroadcastListener(self)
+        self.lan_listener.announcement_received.connect(self._on_lan_announcement)
+        self.lan_listener.start_listening()
+
+        self._sched_timer = QTimer(self)
+        self._sched_timer.setInterval(30000)
+        self._sched_timer.timeout.connect(self._check_scheduled_announcements)
+        self._sched_timer.start()
 
         # System health periodic timer
         self._health_timer = QTimer(self)
@@ -697,6 +709,34 @@ def main(argv: list[str] | None = None) -> int:
         self._cb_win.show()
         self._cb_win.raise_()
         self._cb_win.activateWindow()
+
+    def _on_lan_announcement(self, data: dict):
+        from .lan_broadcast import LanNoticeToast
+        toast = LanNoticeToast(data)
+        toast.show()
+        toast.raise_()
+
+    def open_lan_broadcast_dialog(self):
+        from .lan_broadcast import LanBroadcastDialog
+        if not hasattr(self, "_lan_dialog") or self._lan_dialog is None or self._lan_dialog.isHidden():
+            self._lan_dialog = LanBroadcastDialog()
+        self._lan_dialog.show()
+        self._lan_dialog.raise_()
+        self._lan_dialog.activateWindow()
+
+    def _check_scheduled_announcements(self):
+        from datetime import datetime
+        from .lan_broadcast import load_scheduled, save_scheduled, broadcast_message
+        items = load_scheduled()
+        now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
+        remaining = []
+        for it in items:
+            if it.get("trigger_dt") and it.get("trigger_dt") <= now_str:
+                broadcast_message(it.get("title", ""), it.get("message", ""), it.get("icon", "🛡️"))
+            else:
+                remaining.append(it)
+        if len(remaining) != len(items):
+            save_scheduled(remaining)
 
     def start_gif_recording(self):
         if hasattr(self, "tray_menu"):

@@ -150,7 +150,15 @@ Arrastar Arquivo ──▶ Pressionar [Shift] ──▶ Menu Radial Projetado �
 
 ---
 
-### 16. Motor Visual Liquid-Glass com 5 Temas Suaves
+### 16. 📡 Comunicados em Rede Local P2P (DSS & Lembretes de Equipe)
+* **Comunicação Intranet sem Servidor:** Transmita avisos e comunicados importantes para todos os computadores da empresa conectados na mesma rede local (LAN via UDP Broadcast), sem depender de internet externa ou servidores caros.
+* **Notificação Flutuante ao Lado do Relógio:** Quando um comunicado é disparado, surge um card elegante em Liquid-Glass no canto inferior direito do Windows com temporizador de até 2 minutos e botão de dispensa imediata (*"✓ Entendido"*).
+* **Agendamento Inteligente:** Programe disparos com antecedência (ex: programar na quarta-feira à tarde o aviso: *"Olá! Nosso DSS é amanhã às 08:15, fique atento e compareça se possível :)"*).
+* **Modelos Corporativos Rápidos:** Modelos pré-configurados em 1 clique para *DSS (Diálogo Semanal de Segurança)*, *Manutenção Preventiva*, *Café da Equipe* e *Aniversariantes*.
+
+---
+
+### 17. Motor Visual Liquid-Glass com 5 Temas Suaves
 * Efeito de vidro translúcido acrílico (Windows DWM API e shaders SDF).
 * 5 Paletas de cores suaves para combinar com qualquer preferência:
   * **Aurora Violeta** *(Padrão contemporâneo)*

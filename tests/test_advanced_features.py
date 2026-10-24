@@ -312,3 +312,32 @@ def test_icp_brasil_cert_stamp():
     assert stamp_im.size == (480, 160)
     assert stamp_im.mode == "RGBA"
     dlg.close()
+
+
+
+def test_lan_broadcast_and_scheduler():
+    from docfast import lan_broadcast
+    from PySide6.QtWidgets import QApplication
+
+    qapp = QApplication.instance() or QApplication([])
+
+    # Test broadcasting a packet
+    sent = lan_broadcast.broadcast_message("DSS - Seguranca", "Mensagem de teste de seguranca")
+    assert sent is True
+
+    # Test scheduler storage
+    test_ann = [{"id": "t1", "title": "DSS Teste", "message": "Hora do DSS", "trigger_dt": "2026-10-24 15:00"}]
+    lan_broadcast.save_scheduled(test_ann)
+    loaded = lan_broadcast.load_scheduled()
+    assert any(it["id"] == "t1" for it in loaded)
+
+    # Test toast widget
+    toast = lan_broadcast.LanNoticeToast({
+        "title": "DSS Teste",
+        "sender_name": "Gleisson",
+        "sender_host": "PC-TEST",
+        "message": "Nosso DSS e amanha as 08:15",
+        "icon": "🛡️"
+    })
+    assert "DSS Teste" in toast.windowTitle()
+    toast.close()
