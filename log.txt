@@ -1,0 +1,260 @@
+[   0.02] macOS 26.6.2 screen (1024, 768)
+[  13.43] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  13.66] measured blob offset (not applied): -1 -30
+[  15.95] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  16.09] FAIL JPG → PNG                        0.3s  ModuleNotFoundError: No module named 'winreg'
+[  17.87] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  18.41] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  18.58] FAIL JPG → WEBP                       0.2s  ModuleNotFoundError: No module named 'winreg'
+[  20.70] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  21.29] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  21.38] FAIL JPG → HEIC                       0.1s  ModuleNotFoundError: No module named 'winreg'
+[  23.07] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  23.58] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  23.69] FAIL JPG → PDF                        0.1s  ModuleNotFoundError: No module named 'winreg'
+[  25.54] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  26.06] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  26.16] FAIL PNG → JPG                        0.1s  ModuleNotFoundError: No module named 'winreg'
+[  28.11] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  28.69] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  28.80] FAIL PDF → JPG (3 pages)              0.1s  ModuleNotFoundError: No module named 'winreg'
+[  30.72] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  31.30] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  31.38] FAIL PDF → TXT                        0.1s  ModuleNotFoundError: No module named 'winreg'
+[  32.99] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  33.52] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  33.61] FAIL DOCX → PDF                       0.1s  ModuleNotFoundError: No module named 'winreg'
+[  35.16] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  35.68] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  35.76] FAIL PDF Split                        0.1s  ModuleNotFoundError: No module named 'winreg'
+[  37.43] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  37.94] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  38.04] FAIL PDF Rotate                       0.1s  ModuleNotFoundError: No module named 'winreg'
+[  39.82] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  40.33] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  40.47] FAIL PDF Compress                     0.1s  ModuleNotFoundError: No module named 'winreg'
+[  42.47] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  42.98] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  43.09] FAIL Merge 2 PDFs                     0.1s  ModuleNotFoundError: No module named 'winreg'
+[  45.08] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  45.61] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  45.78] FAIL Compress (window, Enter)         0.2s  ModuleNotFoundError: No module named 'winreg'
+[  47.99] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  48.57] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  48.71] FAIL Resize 50% (window, Enter)       0.2s  ModuleNotFoundError: No module named 'winreg'
+[  50.82] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  51.40] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  51.63] FAIL Add BG (window, Enter)           0.2s  ModuleNotFoundError: No module named 'winreg'
+[  53.75] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  54.33] Traceback (most recent call last):
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 241, in run
+    ring_i, idx, n = ring_index(srcs, ring, label)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/demo/e2e_mac.py", line 199, in ring_index
+    from docfast.app import DocFASTApp
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'
+
+[  54.49] FAIL Metadata: remove all (Enter)     0.2s  ModuleNotFoundError: No module named 'winreg'
+[  56.58] icon positions (screen): {'D-Photo.jpg': (140, 148), 'D-Report.pdf': (140, 263), 'D-Appendix.pdf': (140, 378), 'D-Letter.docx': (140, 493), 'D-Graphic.png': (140, 608)}
+[  57.69] DONE 0/17
