@@ -109,7 +109,48 @@ Arrastar Arquivo ──▶ Pressionar [Shift] ──▶ Menu Radial Projetado �
 
 ---
 
-### 10. Motor Visual Liquid-Glass com 5 Temas Suaves
+### 10. 🧮 Especialista em Excel & Análise de Dados (Atalho Global `Ctrl + 3`)
+* **Análise Visual Instantânea:** Pressione **`Ctrl + 3`** enquanto estiver usando o Excel ou visualizando qualquer tabela/dashboard na tela.
+* O DocFAST captura a tela suavemente e aciona a IA especializada em Excel:
+  * Sugere automaticamente as fórmulas mais eficientes (`PROCX`, `IFS`, `SOMASES`, `ÍNDICE/CORRESP`).
+  * Identifica inconsistências de tipos de dados (números formatados como texto, erros `#N/D`, `#VALOR!`).
+  * Fornece insights estatísticos e sugestões de tabelas dinâmicas.
+
+---
+
+### 11. 📝 Notas Rápidas Fixas de Vidro (Sticky Notes Corporativo)
+* **Post-its Flutuantes em Liquid-Glass:** Crie notas rápidas com fixação no topo (📌) para não esquecer tarefas ou recados durante reuniões e análises de planilhas.
+* **Paletas de Cores Suaves:** Alterne com 1 clique entre tons de vidro (Amarelo Suave, Aurora Violeta, Menta, Slate e Rosê).
+* **Persistência Automática:** Todas as anotações são salvas em tempo real localmente (`sticky_notes.json`).
+
+---
+
+### 12. 📋 Histórico Visual da Área de Transferência (`Ctrl + Alt + V`)
+* **Nunca Mais Perca Itens Copiados:** Pressione **`Ctrl + Alt + V`** para abrir o painel de vidro com os últimos 25 itens da área de transferência.
+* **Filtros e Busca em Tempo Real:** Filtre por *Todos*, *Textos*, *Imagens* (com miniaturas) ou *Código/Tabelas*.
+* Clique em qualquer item para recopiá-lo instantaneamente.
+
+---
+
+### 13. 📄 Extrator de Mídias de Arquivos do Office (`.docx`, `.pptx`, `.xlsx`)
+* Arraste apresentações do PowerPoint, planilhas ou documentos do Word para a fatia **"Extrair Mídias"**.
+* O DocFAST abre o container e extrai todas as fotos, logotipos e gráficos na resolução nativa máxima para uma pasta dedicada ao lado do documento.
+
+---
+
+### 14. 🔏 Assinatura com Certificado Digital ICP-Brasil (`.pfx` / A1)
+* Na ferramenta de assinatura de PDF, clique em **"🔏 Certificado Digital (ICP-Brasil)"**.
+* Carregue seu arquivo `.pfx` ou `.p12`: o DocFAST extrai o titular, emissora, data e estampa o selo oficial de autenticação com resumo criptográfico **SHA-256**, em conformidade com a MP 2.200-2/2001 e normas do ICP-Brasil.
+
+---
+
+### 15. 🎞️ Gravador de Tela para GIF Leve de Demonstração (até 15s)
+* Selecione uma área da tela e grave tutoriais rápidos, demonstrações de sistemas ou registros de erros.
+* Gera na hora um arquivo **GIF ultra-leve (< 2 MB)** salvo diretamente na sua Área de Trabalho, perfeito para envio no Teams, WhatsApp ou documentação.
+
+---
+
+### 16. Motor Visual Liquid-Glass com 5 Temas Suaves
 * Efeito de vidro translúcido acrílico (Windows DWM API e shaders SDF).
 * 5 Paletas de cores suaves para combinar com qualquer preferência:
   * **Aurora Violeta** *(Padrão contemporâneo)*
@@ -153,8 +194,9 @@ Arrastar Arquivo ──▶ Pressionar [Shift] ──▶ Menu Radial Projetado �
 | :--- | :--- | :--- | :--- |
 | **Imagens** | JPG, PNG, WEBP, HEIC, AVIF, TIFF, BMP, ICO, GIF | PNG, JPG, WEBP, AVIF, TIFF, BMP, ICO, PDF | Compactar (tamanho alvo), Redimensionar, Recortar, Anotar, Tarjar (censura), Fundo gradiente, Filtros de cor, Limpeza de Metadados EXIF/GPS |
 | **Documentos PDF** | PDF | JPG, PNG, DOCX (Word), TXT | ✍️ Assinar / Carimbar, 📑 Organizar Páginas, Juntar PDFs, Dividir PDF, Compactar, Proteger por Senha (AES-256), Extrair Imagens |
-| **Planilhas** | XLSX, XLS, XLSM, XLSB, CSV, TSV | PDF formatado, XLSX, CSV, JSON, HTML | Visualização rápida de dados, exportação estruturada |
-| **Documentos Word** | DOCX | PDF, TXT | Conversão veloz de contratos e relatórios |
+| **Planilhas** | XLSX, XLS, XLSM, XLSB, CSV, TSV | PDF formatado, XLSX, CSV, JSON, HTML, Extrair Mídias | 🧮 Especialista em Excel (Ctrl+3), visualização rápida de dados |
+| **Documentos Word** | DOCX | PDF, TXT, Extrair Mídias | Extração de fotos/logos em alta resolução, conversão veloz |
+| **Apresentações** | PPTX, PPT | Extrair Mídias, Zip | Extração de imagens e gráficos em qualidade máxima |
 | **Textos & Notas** | TXT, MD | PDF, DOCX | Renderização tipográfica limpa |
 | **Área de Transferência** | Clipboard (PrintScreen ou Texto) | PNG, JPG, PDF, TXT, DOCX, Desktop | ✨ Ajuda AI, Anotações com setas, salvamento no Desktop |
 | **Pastas & Arquivos Diversos** | Pastas, ZIP, Arquivos Genéricos | Zip (Normal), Zip (Max), Extrair | Compactação e extração de pastas sem programas pesados |

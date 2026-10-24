@@ -300,3 +300,169 @@ def handle_clipboard_paste(app):
 
     app.toasts.info("Área de Transferência Vazia", "Nenhuma imagem ou texto encontrado na Área de Transferência.")
     return False
+
+
+class ScreenGifRecorder(QWidget):
+    """Region selector and lightweight animated GIF screen recorder (up to 15s)."""
+
+    def __init__(self, on_gif_saved=None, parent=None):
+        super().__init__(None)
+        self.on_gif_saved = on_gif_saved
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setCursor(Qt.CrossCursor)
+
+        geo = QRect()
+        for scr in QGuiApplication.screens():
+            geo = geo.united(scr.geometry())
+        self.setGeometry(geo)
+
+        primary = QGuiApplication.primaryScreen()
+        self.full_pix = primary.grabWindow(0) if primary else QPixmap()
+        self.origin = QPoint()
+        self.current = QPoint()
+        self.is_selecting = False
+        self.selected_rect: QRect | None = None
+
+        self.frames: list[Image.Image] = []
+        self.is_recording = False
+        self.seconds_elapsed = 0
+
+        # Frame capture timer (10 FPS = 100ms)
+        self.frame_timer = QTimer(self)
+        self.frame_timer.setInterval(100)
+        self.frame_timer.timeout.connect(self._capture_frame)
+
+        # Seconds ticker
+        self.sec_timer = QTimer(self)
+        self.sec_timer.setInterval(1000)
+        self.sec_timer.timeout.connect(self._tick_second)
+
+        # Floating control bar
+        self.bar = QFrame(None)
+        self.bar.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+        self.bar.setStyleSheet("""
+            QFrame {
+                background: rgba(15, 23, 42, 0.92);
+                border: 1px solid rgba(90, 200, 255, 0.4);
+                border-radius: 10px;
+                padding: 6px 10px;
+            }
+        """)
+        b_lay = QHBoxLayout(self.bar)
+        b_lay.setContentsMargins(6, 4, 6, 4)
+        b_lay.setSpacing(8)
+
+        self.btn_rec = QPushButton("🔴 Iniciar Gravação GIF")
+        self.btn_rec.setStyleSheet("background: #ef4444; color: #fff; font-weight: 700; border-radius: 6px; padding: 6px 12px;")
+        self.btn_rec.clicked.connect(self._toggle_record)
+        b_lay.addWidget(self.btn_rec)
+
+        self.btn_cancel = QPushButton("Cancelar")
+        self.btn_cancel.setStyleSheet("background: rgba(255,255,255,0.1); color: #cbd5e1; border-radius: 6px; padding: 6px 10px;")
+        self.btn_cancel.clicked.connect(self._cancel)
+        b_lay.addWidget(self.btn_cancel)
+
+    def paintEvent(self, event):
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        p.fillRect(self.rect(), QColor(0, 0, 0, 110))
+
+        if self.is_selecting or self.selected_rect:
+            r = self.selected_rect or QRect(self.origin, self.current).normalized()
+            if r.isValid() and r.width() > 1 and r.height() > 1:
+                p.setCompositionMode(QPainter.CompositionMode_Clear)
+                p.fillRect(r, Qt.transparent)
+                p.setCompositionMode(QPainter.CompositionMode_SourceOver)
+
+                # Red border if recording, blue if selecting
+                border_color = QColor("#ef4444") if self.is_recording else QColor("#5ac8ff")
+                p.setPen(QPen(border_color, 2))
+                p.drawRect(r)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton and not self.is_recording:
+            self.origin = event.pos()
+            self.current = event.pos()
+            self.is_selecting = True
+            self.selected_rect = None
+            self.bar.hide()
+            self.update()
+
+    def mouseMoveEvent(self, event):
+        if self.is_selecting:
+            self.current = event.pos()
+            self.update()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton and self.is_selecting:
+            self.is_selecting = False
+            r = QRect(self.origin, self.current).normalized()
+            if r.width() > 30 and r.height() > 30:
+                self.selected_rect = r
+                # Position floating bar just below or above selected area
+                bx = max(10, r.center().x() - 140)
+                by = r.bottom() + 10 if r.bottom() + 60 < self.height() else r.top() - 50
+                self.bar.move(bx, by)
+                self.bar.show()
+                self.update()
+            else:
+                self.close()
+
+    def _toggle_record(self):
+        if not self.is_recording:
+            # Start
+            self.is_recording = True
+            self.frames = []
+            self.seconds_elapsed = 0
+            self.btn_rec.setText("⏹ Concluir GIF (00:00 / 00:15)")
+            self.btn_rec.setStyleSheet("background: #22c55e; color: #fff; font-weight: 700; border-radius: 6px; padding: 6px 12px;")
+            self.btn_cancel.hide()
+            self.frame_timer.start()
+            self.sec_timer.start()
+            self.update()
+        else:
+            # Stop & save
+            self._finish_and_save()
+
+    def _tick_second(self):
+        self.seconds_elapsed += 1
+        self.btn_rec.setText(f"⏹ Concluir GIF ({self.seconds_elapsed:02d}:00 / 00:15)")
+        if self.seconds_elapsed >= 15:
+            self._finish_and_save()
+
+    def _capture_frame(self):
+        if not self.selected_rect:
+            return
+        primary = QGuiApplication.primaryScreen()
+        if primary:
+            pix = primary.grabWindow(0, self.selected_rect.x(), self.selected_rect.y(),
+                                     self.selected_rect.width(), self.selected_rect.height())
+            im = Image.fromqpixmap(pix)
+            self.frames.append(im.convert("P", palette=Image.ADAPTIVE))
+
+    def _finish_and_save(self):
+        self.frame_timer.stop()
+        self.sec_timer.stop()
+        self.bar.hide()
+        self.close()
+
+        if self.frames:
+            out_file = unique_path(desktop_dir() / "DocFAST_Gravacao.gif")
+            first = self.frames[0]
+            first.save(
+                out_file,
+                save_all=True,
+                append_images=self.frames[1:],
+                duration=100,
+                loop=0,
+                optimize=True,
+            )
+            if self.on_gif_saved:
+                self.on_gif_saved(out_file)
+
+    def _cancel(self):
+        self.frame_timer.stop()
+        self.sec_timer.stop()
+        self.bar.hide()
+        self.close()

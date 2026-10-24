@@ -584,6 +584,32 @@ def sheet_to(src: str | Path, target: str) -> list[Path]:
         return sheet_to_html(src)
     raise ValueError(f"Can't convert spreadsheet to {target}")
 
+
+def extract_office_media(src: str | Path) -> list[Path]:
+    """Extracts all embedded images and media from .docx, .pptx, .xlsx, .xlsm files."""
+    import zipfile
+    from .util import unique_path
+    p = Path(src)
+    out_dir = unique_path(p.parent / f"{p.stem}_midias")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    extracted: list[Path] = []
+    MEDIA_EXTS = {".png", ".jpg", ".jpeg", ".svg", ".gif", ".emf", ".wmf", ".tiff", ".webp"}
+    try:
+        with zipfile.ZipFile(p, "r") as zf:
+            for name in zf.namelist():
+                lower_name = name.lower()
+                if "media/" in lower_name and any(lower_name.endswith(ext) for ext in MEDIA_EXTS):
+                    file_bytes = zf.read(name)
+                    base_name = Path(name).name
+                    dest_file = unique_path(out_dir / base_name)
+                    dest_file.write_bytes(file_bytes)
+                    extracted.append(dest_file)
+    except Exception as e:
+        raise ValueError(f"Nao foi possivel extrair midias de {p.name}: {e}")
+    if not extracted:
+        raise ValueError(f"Nenhuma midia ou imagem encontrada dentro de {p.name}")
+    return extracted
+
 # ---------------------------------------------------------------- dispatch
 def targets_for(cat: str, src_ext: str, num_files: int = 1) -> list[str]:
     src_ext = src_ext.lower().lstrip(".")
@@ -604,15 +630,17 @@ def targets_for(cat: str, src_ext: str, num_files: int = 1) -> list[str]:
         return t
     if cat == "sheet":
         if src_ext in ("xlsx", "xls", "xlsm", "xlsb"):
-            return ["PDF", "CSV", "JSON", "HTML"]
+            return ["PDF", "CSV", "JSON", "HTML", "Extrair Midias"]
         if src_ext == "csv":
             return ["XLSX", "PDF", "JSON", "HTML"]
         return ["PDF", "CSV", "JSON"]
+    if cat == "docx":
+        return ["PDF", "TXT", "Extrair Midias"]
     if cat == "archive":
         return ["Extrair", "Zip", "Zip (Max)"]
     if cat in ("generic", "directory"):
         return ["Zip", "Zip (Max)"]
-    return {"pdf": PDF_TARGETS, "docx": DOCX_TARGETS, "text": TEXT_TARGETS}.get(cat, ["Zip", "Zip (Max)"])
+    return {"pdf": PDF_TARGETS, "docx": ["PDF", "TXT", "Extrair Midias"], "text": TEXT_TARGETS}.get(cat, ["Zip", "Zip (Max)"])
 
 
 def convert(src: str | Path, cat: str, target: str) -> list[Path]:
@@ -634,6 +662,8 @@ def convert(src: str | Path, cat: str, target: str) -> list[Path]:
         return docx_to_pdf(src) if target == "PDF" else docx_to_txt(src)
     if cat == "text":
         return text_to_pdf(src) if target == "PDF" else text_to_docx(src)
+    if "EXTRAIR" in target and ("MIDIA" in target or "MÍDIA" in target):
+        return extract_office_media(src)
     if target in ("EXTRAIR", "EXTRACT"):
         return extract_archive(src)
     if "ZIP" in target:

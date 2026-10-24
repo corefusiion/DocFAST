@@ -393,7 +393,7 @@ class SettingsWindow(GlassWindow):
 
 class WelcomeWindow(GlassWindow):
     def __init__(self, settings: Settings, trigger_label: str = "Shift"):
-        super().__init__("Guia Completo de Uso · DocFAST PRO", size=(640, 600))
+        super().__init__("Guia Completo de Uso · DocFAST PRO", size=(680, 660))
         self.s = settings
 
         subtitle = QLabel("Domine todas as funcionalidades e atalhos de alta produtividade do DocFAST:")
@@ -407,17 +407,23 @@ class WelcomeWindow(GlassWindow):
             ("⇄", "Alternar entre Conversão e Ferramentas",
              f"Enquanto o menu radial estiver aberto na tela, toque na tecla <b>{trigger_label}</b> uma segunda vez para alternar instantaneamente entre o anel de formatos de <i>Conversão</i> e o anel de <i>Ferramentas Visuais</i>."),
 
-            ("🖱️", "Menu do Botão Direito no Windows Explorer",
-             "Clique com o botão direito em qualquer arquivo ou pasta para acionar o <b>DocFAST — Menu Radial</b>, iniciar a <b>✨ Ajuda AI</b> diretamente ou escolher <b>🗜️ Compactar (Zip)</b>."),
+            ("🧮", "Especialista em Excel & Planilhas (Atalho Ctrl + 3)",
+             "Pressione <b>Ctrl + 3</b> enquanto estiver usando o Excel ou visualizando uma tabela na tela. O DocFAST tira um print suave da planilha e abre o chat de IA especializado sugerindo fórmulas (PROCX, IFS, SOMASES, etc.), correções e análises na hora."),
 
-            ("🤖", "Ajuda AI & Ajuda AI Plus (Onipresente)",
-             "Selecione um texto em qualquer planilha do Excel, documento do Word, ERP ou página web e abra o chat de inteligência artificial. O modo <b>Ajuda AI Plus</b> captura a tela para analisar fórmulas, gráficos e erros visualmente."),
+            ("📝", "Notas Rápidas Fixas de Vidro (Sticky Notes)",
+             "Crie pequenas notas translúcidas elegantes fixadas na tela (📌) com múltiplas cores suaves para rascunhos de reuniões e tarefas diárias."),
 
-            ("✍️", "Assinar e Organizar Contratos em PDF",
-             "Abra qualquer PDF e escolha <i>Assinar / Carimbar</i>. Desenhe sua rubrica ou carregue uma foto da assinatura (o fundo branco é removido automaticamente). Na ferramenta <i>Organizar Páginas</i>, reordene e gire páginas por arrasto."),
+            ("📋", "Histórico Visual da Área de Transferência (Ctrl + Alt + V)",
+             "Pressione <b>Ctrl + Alt + V</b> para abrir o painel Liquid-Glass com os últimos 25 itens copiados (textos, links, imagens e tabelas) prontos para colar com 1 clique."),
 
-            ("📋", "Área de Transferência Direto na Área de Trabalho",
-             "Pressione Ctrl+C em qualquer print ou texto e escolha <i>Colar da Área de Transferência</i> para salvar na sua Área de Trabalho (Desktop) em <b>TXT</b>, <b>DOCX</b> ou <b>PDF</b>."),
+            ("📄", "Extrair Mídias de Arquivos do Office (.docx, .pptx, .xlsx)",
+             "Arraste qualquer apresentação do PowerPoint (.pptx) ou documento do Word (.docx) e selecione <i>Extrair Mídias</i> para extrair todas as fotos e gráficos na resolução nativa máxima."),
+
+            ("🔏", "Certificado Digital ICP-Brasil (.pfx / A1)",
+             "Na ferramenta de PDF, clique em <i>Certificado Digital (ICP-Brasil)</i> para carregar seu arquivo .pfx e aplicar o selo oficial com hash SHA-256 e conformidade com a MP 2.200-2/2001."),
+
+            ("🎞️", "Gravar GIFs da Tela (até 15s)",
+             "Selecione uma área da tela pelo menu da bandeja e grave tutoriais ou demonstrações de bugs em GIFs ultra-leves (< 2 MB) salvos diretamente no seu Desktop."),
         ]
 
         for icon_symbol, title, description in guide_items:

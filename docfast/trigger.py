@@ -24,6 +24,8 @@ class DocFASTWatcher(DocFASTWatcher):
     show_menu = Signal(QPoint)
     toggle_ring = Signal()
     hide_menu = Signal()
+    excel_ai_triggered = Signal()
+    clipboard_history_triggered = Signal()
 
     def __init__(self, menu_visible, menu_got_drag, parent=None):
         super().__init__(parent)
@@ -37,6 +39,8 @@ class DocFASTWatcher(DocFASTWatcher):
         self._fired = False
         self._idle_ticks = 0
         self._shown_at = QPoint()
+        self._ctrl3_was = False
+        self._ctrl_alt_v_was = False
         self._user32 = ctypes.windll.user32 if sys.platform == "win32" else None
         self._mac = None
         if sys.platform == "darwin":
@@ -69,6 +73,25 @@ class DocFASTWatcher(DocFASTWatcher):
     def _tick(self):
         lbtn, shift, esc = self._state()
         pos = QCursor.pos()
+
+        # Check global shortcuts on Windows
+        if self._user32 is not None and self.enabled:
+            ctrl_down = self._down(0x11) # VK_CONTROL
+            alt_down = self._down(0x12)  # VK_MENU (Alt)
+            key_3_down = self._down(0x33) # '3'
+            key_v_down = self._down(0x56) # 'V'
+
+            # Ctrl + 3 -> Excel AI Specialist
+            ctrl3_now = ctrl_down and key_3_down and not alt_down
+            if ctrl3_now and not self._ctrl3_was:
+                self.excel_ai_triggered.emit()
+            self._ctrl3_was = ctrl3_now
+
+            # Ctrl + Alt + V -> Liquid Clipboard History
+            c_a_v_now = ctrl_down and alt_down and key_v_down
+            if c_a_v_now and not self._ctrl_alt_v_was:
+                self.clipboard_history_triggered.emit()
+            self._ctrl_alt_v_was = c_a_v_now
 
         if self.menu_visible():
             if not lbtn or esc:

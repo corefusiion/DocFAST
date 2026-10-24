@@ -19,6 +19,9 @@ from .i18n import t, set_language, get_language
 from .radial import Item, RadialMenu
 from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
 from .toasts import ToastStack
+from .sticky import StickyNoteWindow
+from .clipboard_history import ClipboardHistoryManager, ClipboardHistoryWindow
+from .snipper import ScreenGifRecorder
 from .trigger import DocFASTWatcher
 from .util import UserError, category, file_size, human_size, keep, release
 
@@ -156,6 +159,8 @@ class DocFASTApp(QObject):
         self.watcher.show_menu.connect(lambda pos: self.menu.popup(pos))
         self.watcher.toggle_ring.connect(self.menu.next_ring)
         self.watcher.hide_menu.connect(self.menu.close_menu)
+        self.watcher.excel_ai_triggered.connect(self.start_excel_ai_assistant)
+        self.watcher.clipboard_history_triggered.connect(self.open_clipboard_history)
         self.watcher.start()
 
         # files handed over by "Send to", the right-click menu, or a second launch
@@ -180,6 +185,11 @@ class DocFASTApp(QObject):
         m.addSeparator()
         m.addAction("✨ Ajuda AI (Texto selecionado)", lambda: self.ask_ai_on_selection(plus=False))
         m.addAction("📸 Ajuda AI Plus (Texto + Print da Tela)", lambda: self.ask_ai_on_selection(plus=True))
+        m.addAction("📊 Especialista em Excel & Planilhas (Ctrl+3)", self.start_excel_ai_assistant)
+        m.addSeparator()
+        m.addAction("📝 Nova Nota Rápida (Sticky Note)", self.open_sticky_note)
+        m.addAction("📋 Histórico da Área de Transferência (Ctrl+Alt+V)", self.open_clipboard_history)
+        m.addAction("🎞️ Gravar GIF da Tela (até 15s)", self.start_gif_recording)
         m.addSeparator()
         m.addAction("📊 Status do Sistema & Disco", self.show_system_health)
         m.addSeparator()
@@ -195,6 +205,10 @@ class DocFASTApp(QObject):
         self.tray.setContextMenu(m)
         self.tray.activated.connect(self._tray_click)
         self.tray.show()
+
+        # Clipboard history listener & Sticky Notes restore
+        ClipboardHistoryManager.get_instance().attach_listener()
+        QTimer.singleShot(600, StickyNoteWindow.restore_all)
 
         # System health periodic timer
         self._health_timer = QTimer(self)
@@ -645,6 +659,54 @@ def main(argv: list[str] | None = None) -> int:
     return qapp.exec()
 
 
+
+
+    def start_excel_ai_assistant(self):
+        """Grabs active screen and opens AI Chat as a specialized Excel/Data Analyst."""
+        if hasattr(self, "tray_menu"):
+            self.tray_menu.hide()
+
+        screen = QGuiApplication.primaryScreen()
+        if not screen:
+            return
+        pix = screen.grabWindow(0)
+
+        from .ai_chat import AiChatWindow
+        if not hasattr(self, "_ai_chat_win") or self._ai_chat_win is None or self._ai_chat_win.isHidden():
+            self._ai_chat_win = AiChatWindow(self.settings)
+
+        self._ai_chat_win._set_attached_image(pix)
+        prompt = (
+            "📊 Olá! Estou analisando esta planilha/tabela na tela. "
+            "Por favor, identifique as colunas e sugira as melhores fórmulas "
+            "(como PROCX, IFS, SOMASES, tabelas dinâmicas) e correções de dados:"
+        )
+        self._ai_chat_win.input_edit.setPlainText(prompt)
+        self._ai_chat_win.show()
+        self._ai_chat_win.raise_()
+        self._ai_chat_win.activateWindow()
+        # Automatically trigger analysis
+        QTimer.singleShot(150, self._ai_chat_win._send_user_message)
+
+    def open_sticky_note(self):
+        StickyNoteWindow.create_new()
+
+    def open_clipboard_history(self):
+        if not hasattr(self, "_cb_win") or self._cb_win is None or self._cb_win.isHidden():
+            self._cb_win = ClipboardHistoryWindow(on_copied=lambda msg: self.toasts.info("Área de Transferência", msg))
+        self._cb_win.show()
+        self._cb_win.raise_()
+        self._cb_win.activateWindow()
+
+    def start_gif_recording(self):
+        if hasattr(self, "tray_menu"):
+            self.tray_menu.hide()
+
+        def on_saved(gif_path):
+            self.toasts.created([gif_path], ["GIF"])
+
+        self._gif_rec = ScreenGifRecorder(on_gif_saved=on_saved)
+        self._gif_rec.show()
 
     def show_system_health(self):
         from .system_card import SystemHealthCard

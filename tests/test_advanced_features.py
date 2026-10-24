@@ -251,3 +251,64 @@ def test_system_card_and_welcome():
     w = WelcomeWindow(s, trigger_label="Shift")
     assert w.windowTitle() != ""
     w.close()
+
+
+
+def test_office_media_extraction(tmp_path):
+    import zipfile
+    from PIL import Image
+    from docfast import convert
+
+    # Create dummy docx with image in word/media/
+    docx_file = tmp_path / "Documento_Teste.docx"
+    with zipfile.ZipFile(docx_file, "w") as zf:
+        zf.writestr("word/document.xml", "<w:document></w:document>")
+        buf = io.BytesIO()
+        Image.new("RGB", (60, 60), (255, 120, 0)).save(buf, format="PNG")
+        zf.writestr("word/media/logo_empresa.png", buf.getvalue())
+
+    extracted = convert.extract_office_media(docx_file)
+    assert len(extracted) == 1
+    assert extracted[0].exists()
+    assert extracted[0].name == "logo_empresa.png"
+
+
+def test_sticky_notes_and_clipboard_history():
+    from docfast import sticky, clipboard_history
+    from PySide6.QtWidgets import QApplication
+
+    qapp = QApplication.instance() or QApplication([])
+
+    # Test StickyNote creation
+    note = sticky.StickyNoteWindow(content="Minha nota corporativa")
+    assert note.editor.toPlainText() == "Minha nota corporativa"
+    note._save_to_disk()
+    notes = sticky.load_all_notes()
+    assert any(n["id"] == note.note_id for n in notes)
+    note._delete_note()
+
+    # Test Clipboard History Manager
+    mgr = clipboard_history.ClipboardHistoryManager.get_instance()
+    mgr.items.insert(0, {"id": "1", "type": "text", "text": "Teste de Copia"})
+    assert len(mgr.items) >= 1
+    w_clip = clipboard_history.ClipboardHistoryWindow()
+    assert w_clip.windowTitle() != ""
+    w_clip.close()
+
+
+def test_icp_brasil_cert_stamp():
+    from docfast import pdf_tools
+    from PySide6.QtWidgets import QApplication
+
+    qapp = QApplication.instance() or QApplication([])
+
+    dlg = pdf_tools.DigitalCertSignDialog()
+    dlg.cert_info = {
+        "name": "Gleisson Santos",
+        "issuer": "AC SERPRO ICP-Brasil",
+        "date": "24/10/2026 12:00:00"
+    }
+    stamp_im = dlg.generate_stamp_image("dummy_sha256_hash")
+    assert stamp_im.size == (480, 160)
+    assert stamp_im.mode == "RGBA"
+    dlg.close()
