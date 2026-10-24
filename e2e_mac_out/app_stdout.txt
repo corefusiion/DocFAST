@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/__main__.py", line 8, in <module>
+    from docfast.app import main  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/app.py", line 20, in <module>
+    from .settings import Settings, SettingsWindow, WelcomeWindow, TRIGGERS
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/settings.py", line 12, in <module>
+    from . import __version__, ai_client, system_card
+  File "/Users/runner/work/DocFAST/DocFAST/docfast/system_card.py", line 11, in <module>
+    import winreg
+ModuleNotFoundError: No module named 'winreg'

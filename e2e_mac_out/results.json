@@ -1,0 +1,121 @@
+[
+ {
+  "name": "JPG \u2192 PNG",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.3
+ },
+ {
+  "name": "JPG \u2192 WEBP",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "JPG \u2192 HEIC",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "JPG \u2192 PDF",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "PNG \u2192 JPG",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "PDF \u2192 JPG (3 pages)",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "PDF \u2192 TXT",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "DOCX \u2192 PDF",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "PDF Split",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "PDF Rotate",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "PDF Compress",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "Merge 2 PDFs",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "Compress (window, Enter)",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "Resize 50% (window, Enter)",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "Add BG (window, Enter)",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "Metadata: remove all (Enter)",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "ModuleNotFoundError: No module named 'winreg'",
+  "seconds": 0.1
+ },
+ {
+  "name": "Slices filled before the mouse moves",
+  "where": "mac desktop",
+  "status": "FAIL",
+  "detail": "pasteboard not read",
+  "seconds": 0
+ }
+]
