@@ -8,7 +8,10 @@ import ctypes
 import os
 import shutil
 import sys
-import winreg
+try:
+    import winreg
+except ImportError:
+    winreg = None
 from pathlib import Path
 
 from PySide6.QtCore import QPoint, QRect, QRectF, QSize, Qt, QTimer

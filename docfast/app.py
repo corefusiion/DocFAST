@@ -226,7 +226,6 @@ class DocFASTApp(QObject):
         self._health_timer = QTimer(self)
         self._health_timer.timeout.connect(self._on_periodic_health)
         self._update_health_timer()
-        self.settings.changed.connect(self._update_health_timer)
 
     def start_snipping(self):
         if hasattr(self, "tray_menu"):
@@ -560,119 +559,10 @@ class DocFASTApp(QObject):
     def _settings_changed(self):
         self.watcher.set_key(self.settings.get("trigger"))
         self.tray.setToolTip(f"{APP_NAME} — press {self.trigger_label()} while dragging a file")
+        self._update_health_timer()
 
     def show_welcome(self):
         self.open_window(WelcomeWindow(self.settings, self.trigger_label()))
-
-
-class DocFASTQApplication(QApplication):
-    """macOS delivers files from Finder's "Open With", the Dock and `open -a` as FileOpen
-    events (not argv)."""
-    file_opened = Signal(str)
-
-    def __init__(self, argv):
-        super().__init__(argv)
-        self.early_files: list[str] = []
-
-    def event(self, e):
-        from PySide6.QtCore import QEvent
-        if e.type() == QEvent.FileOpen:
-            f = e.file()
-            if f:
-                self.early_files.append(f)
-                self.file_opened.emit(f)
-            return True
-        return super().event(e)
-
-
-def mac_setup(qapp):
-    # fonts: util.ui_family picks a real installed family. (Substituting the private
-    # ".AppleSystemUIFont" made labels draw nothing on macOS 26.)
-    try:
-        from . import platform_mac
-        platform_mac.become_accessory()
-    except Exception:
-        pass
-
-
-def send_to_running(payload: dict) -> bool:
-    s = QLocalSocket()
-    s.connectToServer(IPC_NAME)
-    if not s.waitForConnected(300):
-        return False
-    s.write(json.dumps(payload).encode("utf-8"))
-    s.flush()
-    s.waitForBytesWritten(500)
-    s.disconnectFromServer()
-    return True
-
-
-def setup_logging():
-    """Errors go to %LOCALAPPDATA%\\DocFAST\\log.txt (pythonw / the .exe have no console)."""
-    import faulthandler
-    if IS_MAC:
-        base = Path.home() / "Library" / "Logs" / "DocFAST"
-    else:
-        base = Path(os.environ.get("LOCALAPPDATA") or Path.home() / ".local" / "share") / "DocFAST"
-    base.mkdir(parents=True, exist_ok=True)
-    path = base / "log.txt"
-    if path.exists() and path.stat().st_size > 1_000_000:
-        path.replace(base / "log.old.txt")
-    f = open(path, "a", encoding="utf-8", buffering=1)
-    f.write(f"\n==== DocFAST {VERSION} started {time.strftime('%Y-%m-%d %H:%M:%S')} ====\n")
-    if sys.stderr is None or getattr(sys, "frozen", False) or sys.executable.lower().endswith("pythonw.exe"):
-        sys.stdout = sys.stderr = f
-    faulthandler.enable(f)
-
-    def hook(t, v, tb):
-        f.write("Unhandled: " + "".join(traceback.format_exception(t, v, tb)))
-    sys.excepthook = hook
-    return path
-
-
-def main(argv: list[str] | None = None) -> int:
-    argv = sys.argv if argv is None else argv
-    try:
-        setup_logging()
-    except Exception:
-        pass
-    if IS_WIN:
-        try:  # crisp taskbar/tray icon grouping
-            import ctypes
-            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("DocFAST.App")
-        except Exception:
-            pass
-    QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-    qapp = DocFASTQApplication(argv)
-    if IS_MAC:
-        mac_setup(qapp)
-    qapp.setApplicationName(APP_NAME)
-    qapp.setApplicationVersion(VERSION)
-    qapp.setQuitOnLastWindowClosed(False)
-    qapp.setWindowIcon(make_icon())
-
-    if "--selftest" in argv:
-        return selftest()
-    files = [os.path.abspath(a) for a in argv[1:] if not a.startswith("-") and os.path.exists(a)]
-    # already running? hand over and exit (instant: no second UI start-up)
-    if send_to_running({"files": files} if files else {"show": "--quiet" not in argv}):
-        return 0
-    app = DocFASTApp(qapp)
-    qapp.file_opened.connect(lambda f: app.queue_files([f]))
-    if qapp.early_files:
-        app.queue_files(list(qapp.early_files))
-    if files:  # e.g. "Send to → DocFAST" or drag onto the .exe
-        QTimer.singleShot(120, lambda: app.queue_files(files))
-    elif not app.settings.get("welcomed"):
-        QTimer.singleShot(300, app.show_welcome)
-    elif "--quiet" not in argv:
-        QTimer.singleShot(400, lambda: app.toasts.info(
-            "DocFAST is running", f"Drag any file, then press {app.trigger_label()}."))
-    return qapp.exec()
-
-
-
-
     def start_excel_ai_assistant(self):
         """Grabs active screen and opens AI Chat as a specialized Excel/Data Analyst."""
         if hasattr(self, "tray_menu"):
@@ -800,6 +690,116 @@ def main(argv: list[str] | None = None) -> int:
             self.toasts.created(res, ["Zip"])
         except Exception as e:
             self.toasts.error(f"Erro ao compactar: {e}")
+
+
+
+
+class DocFASTQApplication(QApplication):
+    """macOS delivers files from Finder's "Open With", the Dock and `open -a` as FileOpen
+    events (not argv)."""
+    file_opened = Signal(str)
+
+    def __init__(self, argv):
+        super().__init__(argv)
+        self.early_files: list[str] = []
+
+    def event(self, e):
+        from PySide6.QtCore import QEvent
+        if e.type() == QEvent.FileOpen:
+            f = e.file()
+            if f:
+                self.early_files.append(f)
+                self.file_opened.emit(f)
+            return True
+        return super().event(e)
+
+
+def mac_setup(qapp):
+    # fonts: util.ui_family picks a real installed family. (Substituting the private
+    # ".AppleSystemUIFont" made labels draw nothing on macOS 26.)
+    try:
+        from . import platform_mac
+        platform_mac.become_accessory()
+    except Exception:
+        pass
+
+
+def send_to_running(payload: dict) -> bool:
+    s = QLocalSocket()
+    s.connectToServer(IPC_NAME)
+    if not s.waitForConnected(300):
+        return False
+    s.write(json.dumps(payload).encode("utf-8"))
+    s.flush()
+    s.waitForBytesWritten(500)
+    s.disconnectFromServer()
+    return True
+
+
+def setup_logging():
+    """Errors go to %LOCALAPPDATA%\\DocFAST\\log.txt (pythonw / the .exe have no console)."""
+    import faulthandler
+    if IS_MAC:
+        base = Path.home() / "Library" / "Logs" / "DocFAST"
+    else:
+        base = Path(os.environ.get("LOCALAPPDATA") or Path.home() / ".local" / "share") / "DocFAST"
+    base.mkdir(parents=True, exist_ok=True)
+    path = base / "log.txt"
+    if path.exists() and path.stat().st_size > 1_000_000:
+        path.replace(base / "log.old.txt")
+    f = open(path, "a", encoding="utf-8", buffering=1)
+    f.write(f"\n==== DocFAST {VERSION} started {time.strftime('%Y-%m-%d %H:%M:%S')} ====\n")
+    if sys.stderr is None or getattr(sys, "frozen", False) or sys.executable.lower().endswith("pythonw.exe"):
+        sys.stdout = sys.stderr = f
+    faulthandler.enable(f)
+
+    def hook(t, v, tb):
+        f.write("Unhandled: " + "".join(traceback.format_exception(t, v, tb)))
+    sys.excepthook = hook
+    return path
+
+
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv if argv is None else argv
+    try:
+        setup_logging()
+    except Exception:
+        pass
+    if IS_WIN:
+        try:  # crisp taskbar/tray icon grouping
+            import ctypes
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("DocFAST.App")
+        except Exception:
+            pass
+    QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    qapp = DocFASTQApplication(argv)
+    if IS_MAC:
+        mac_setup(qapp)
+    qapp.setApplicationName(APP_NAME)
+    qapp.setApplicationVersion(VERSION)
+    qapp.setQuitOnLastWindowClosed(False)
+    qapp.setWindowIcon(make_icon())
+
+    if "--selftest" in argv:
+        return selftest()
+    files = [os.path.abspath(a) for a in argv[1:] if not a.startswith("-") and os.path.exists(a)]
+    # already running? hand over and exit (instant: no second UI start-up)
+    if send_to_running({"files": files} if files else {"show": "--quiet" not in argv}):
+        return 0
+    app = DocFASTApp(qapp)
+    qapp.file_opened.connect(lambda f: app.queue_files([f]))
+    if qapp.early_files:
+        app.queue_files(list(qapp.early_files))
+    if files:  # e.g. "Send to → DocFAST" or drag onto the .exe
+        QTimer.singleShot(120, lambda: app.queue_files(files))
+    elif not app.settings.get("welcomed"):
+        QTimer.singleShot(300, app.show_welcome)
+    elif "--quiet" not in argv:
+        QTimer.singleShot(400, lambda: app.toasts.info(
+            "DocFAST is running", f"Drag any file, then press {app.trigger_label()}."))
+    return qapp.exec()
+
+
 
 
 def check_text_renders():

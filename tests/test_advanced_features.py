@@ -341,3 +341,18 @@ def test_lan_broadcast_and_scheduler():
     })
     assert "DSS Teste" in toast.windowTitle()
     toast.close()
+
+
+
+def test_docfast_app_instantiation():
+    from docfast.app import DocFASTApp, DocFASTQApplication
+    from PySide6.QtWidgets import QApplication
+
+    qapp = QApplication.instance() or DocFASTQApplication(["DocFAST", "--quiet"])
+    app = DocFASTApp(qapp)
+    assert hasattr(app, "start_excel_ai_assistant")
+    assert hasattr(app, "open_sticky_note")
+    assert hasattr(app, "open_clipboard_history")
+    assert hasattr(app, "open_lan_broadcast_dialog")
+    assert hasattr(app, "show_system_health")
+    assert hasattr(app, "start_gif_recording")
