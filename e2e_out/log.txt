@@ -1,0 +1,404 @@
+[   0.00] ChangeDisplaySettings -> 0
+[  19.93] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[  20.69] FAIL explorer JPG → PNG                           20.7s  AssertionError: no output file appeared
+[  21.30] restoring sources: ['Photo.jpg']
+[  42.30] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[  43.06] FAIL explorer JPG → WEBP                          20.5s  AssertionError: no output file appeared
+[  43.67] restoring sources: ['Photo.jpg']
+[  64.71] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[  65.45] FAIL explorer JPG → HEIC                          20.5s  AssertionError: no output file appeared
+[  66.05] restoring sources: ['Photo.jpg']
+[  87.09] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[  87.84] FAIL explorer JPG → TIFF                          20.5s  AssertionError: no output file appeared
+[  88.44] restoring sources: ['Photo.jpg']
+[ 109.57] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 110.34] FAIL explorer JPG → AVIF                          20.7s  AssertionError: no output file appeared
+[ 110.94] restoring sources: ['Photo.jpg']
+[ 132.01] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 132.74] FAIL explorer JPG → BMP                           20.5s  AssertionError: no output file appeared
+[ 133.35] restoring sources: ['Photo.jpg']
+[ 154.38] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 155.13] FAIL explorer JPG → PDF                           20.5s  AssertionError: no output file appeared
+[ 155.73] restoring sources: ['Photo.jpg']
+[ 176.79] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 177.51] FAIL explorer JPG → ICO                           20.5s  AssertionError: no output file appeared
+[ 178.11] restoring sources: ['Photo.jpg']
+[ 199.14] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 199.88] FAIL explorer JPG → GIF                           20.5s  AssertionError: no output file appeared
+[ 200.48] restoring sources: ['Photo.jpg']
+[ 221.32] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 222.07] FAIL explorer PNG → JPG                           20.3s  AssertionError: no output file appeared
+[ 222.67] restoring sources: ['Graphic.png']
+[ 243.48] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 244.21] FAIL explorer PDF → JPG (3 pages)                 20.3s  AssertionError: no output file appeared
+[ 244.81] restoring sources: ['Report.pdf']
+[ 265.79] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 266.51] FAIL explorer PDF → PNG (3 pages)                 20.5s  AssertionError: no output file appeared
+[ 267.12] restoring sources: ['Report.pdf']
+[ 288.12] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 288.87] FAIL explorer PDF → DOCX                          20.5s  AssertionError: no output file appeared
+[ 289.47] restoring sources: ['Report.pdf']
+[ 310.49] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 311.21] FAIL explorer PDF → TXT                           20.5s  AssertionError: no output file appeared
+[ 331.32] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 332.06] FAIL explorer DOCX → PDF                          20.2s  AssertionError: no output file appeared
+[ 332.66] restoring sources: ['Letter.docx']
+[ 353.70] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 354.48] FAIL explorer DOCX → TXT                          20.6s  AssertionError: no output file appeared
+[ 355.08] restoring sources: ['Letter.docx']
+[ 375.84] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 376.62] FAIL explorer TXT → PDF                           20.3s  AssertionError: no output file appeared
+[ 377.22] restoring sources: ['Notes.txt']
+[ 398.44] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 399.25] FAIL explorer TXT → DOCX                          20.7s  AssertionError: no output file appeared
+[ 399.85] restoring sources: ['Notes.txt']
+[ 422.82] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 423.58] FAIL explorer 2 images → 1 PDF                    22.4s  AssertionError: no output file appeared
+[ 424.19] restoring sources: ['Photo.jpg', 'Second.jpg']
+[ 443.44] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 247, in drive_compress
+    w = tool_win("Compress.*")
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Compress.*
+
+[ 444.22] FAIL explorer Compress to 200 KB                  18.7s  RuntimeError: window not found: Compress.*
+[ 444.82] restoring sources: ['Photo.jpg']
+[ 464.07] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 258, in drive_resize
+    w = tool_win("Resize.*")
+        ^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Resize.*
+
+[ 464.81] FAIL explorer Resize 50%                          18.7s  RuntimeError: window not found: Resize.*
+[ 465.41] restoring sources: ['Photo.jpg']
+[ 484.37] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 267, in drive_crop
+    w = tool_win("Crop Image.*")
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Crop Image.*
+
+[ 485.10] FAIL explorer Crop 1:1                            18.4s  RuntimeError: window not found: Crop Image.*
+[ 485.71] restoring sources: ['Photo.jpg']
+[ 504.60] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 274, in drive_edit
+    w = tool_win("Edit.*")
+        ^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Edit.*
+
+[ 505.33] FAIL explorer Edit: auto + rotate                 18.4s  RuntimeError: window not found: Edit.*
+[ 505.93] restoring sources: ['Photo.jpg']
+[ 524.85] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 290, in drive_annotate
+    w = tool_win("Annotate.*")
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Annotate.*
+
+[ 525.58] FAIL explorer Annotate                            18.4s  RuntimeError: window not found: Annotate.*
+[ 526.19] restoring sources: ['Photo.jpg']
+[ 545.08] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 306, in drive_redact
+    w = tool_win("Redact.*")
+        ^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Redact.*
+
+[ 545.82] FAIL explorer Redact                              18.4s  RuntimeError: window not found: Redact.*
+[ 546.42] restoring sources: ['Photo.jpg']
+[ 565.30] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 319, in drive_addbg
+    w = tool_win("Add BG.*")
+        ^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Add BG.*
+
+[ 566.06] FAIL explorer Add BG 1:1                          18.4s  RuntimeError: window not found: Add BG.*
+[ 566.67] restoring sources: ['Photo.jpg']
+[ 585.54] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 326, in drive_meta_location
+    w = tool_win("Metadata.*")
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Metadata.*
+
+[ 586.26] FAIL explorer Metadata: remove location           18.4s  RuntimeError: window not found: Metadata.*
+[ 586.86] restoring sources: ['Photo.jpg']
+[ 605.73] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 332, in drive_meta_all
+    w = tool_win("Metadata.*")
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Metadata.*
+
+[ 606.46] FAIL explorer Metadata: remove all                18.4s  RuntimeError: window not found: Metadata.*
+[ 607.06] restoring sources: ['Photo.jpg']
+[ 628.77] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 629.51] FAIL explorer PDF Compress                        21.2s  AssertionError: no output file appeared
+[ 630.11] restoring sources: ['Report.pdf']
+[ 651.99] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 652.76] FAIL explorer PDF Split                           21.4s  AssertionError: no output file appeared
+[ 653.36] restoring sources: ['Report.pdf']
+[ 675.30] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 676.05] FAIL explorer PDF Rotate                          21.4s  AssertionError: no output file appeared
+[ 676.66] restoring sources: ['Report.pdf']
+[ 695.76] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 338, in drive_protect
+    w = tool_win("Password-protect.*")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Password-protect.*
+
+[ 696.49] FAIL explorer PDF Protect                         18.6s  RuntimeError: window not found: Password-protect.*
+[ 697.10] restoring sources: ['Report.pdf']
+[ 719.01] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 719.74] FAIL explorer PDF Extract images                  21.4s  AssertionError: no output file appeared
+[ 720.34] restoring sources: ['Report.pdf']
+[ 739.24] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 332, in drive_meta_all
+    w = tool_win("Metadata.*")
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Metadata.*
+
+[ 739.98] FAIL explorer PDF Metadata                        18.4s  RuntimeError: window not found: Metadata.*
+[ 762.76] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 763.51] FAIL explorer Merge 2 PDFs                        22.9s  AssertionError: no output file appeared
+[ 783.13] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 507, in run_ipc
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 783.16] FAIL send-to  Send To → PNG                       19.1s  AssertionError: no output file appeared
+[ 802.52] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 803.24] FAIL desktop  Desktop: JPG → PNG                  20.1s  AssertionError: no output file appeared
+[ 823.14] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 823.87] FAIL desktop  Desktop: PDF → TXT                  20.0s  AssertionError: no output file appeared
+[ 843.75] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 844.49] FAIL desktop  Desktop: DOCX → PDF                 20.0s  AssertionError: no output file appeared
+[ 862.25] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 247, in drive_compress
+    w = tool_win("Compress.*")
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Compress.*
+
+[ 863.02] FAIL desktop  Desktop: Compress                   17.9s  RuntimeError: window not found: Compress.*
+[ 880.88] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 267, in drive_crop
+    w = tool_win("Crop Image.*")
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Crop Image.*
+
+[ 881.65] FAIL desktop  Desktop: Crop                       18.0s  RuntimeError: window not found: Crop Image.*
+[ 899.47] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 212, in run
+    tool()
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 319, in drive_addbg
+    w = tool_win("Add BG.*")
+        ^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 243, in tool_win
+    return wk.find_window(title_re, 12)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\demo\winkit.py", line 176, in find_window
+    raise RuntimeError(f"window not found: {title_re}")
+RuntimeError: window not found: Add BG.*
+
+[ 900.22] FAIL desktop  Desktop: Add BG                     18.0s  RuntimeError: window not found: Add BG.*
+[ 922.33] Traceback (most recent call last):
+  File "D:\a\DocFAST\DocFAST\demo\e2e_windows.py", line 215, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[ 923.08] FAIL desktop  Desktop: 2 PDFs merge               22.3s  AssertionError: no output file appeared
+[ 925.17] DONE 0/44 passed

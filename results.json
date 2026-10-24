@@ -1,0 +1,354 @@
+[
+ {
+  "name": "JPG \u2192 PNG",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.7,
+  "t": 20.7
+ },
+ {
+  "name": "JPG \u2192 WEBP",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.5,
+  "t": 43.1
+ },
+ {
+  "name": "JPG \u2192 HEIC",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.5,
+  "t": 65.4
+ },
+ {
+  "name": "JPG \u2192 TIFF",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.5,
+  "t": 87.8
+ },
+ {
+  "name": "JPG \u2192 AVIF",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.7,
+  "t": 110.3
+ },
+ {
+  "name": "JPG \u2192 BMP",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.5,
+  "t": 132.7
+ },
+ {
+  "name": "JPG \u2192 PDF",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.5,
+  "t": 155.1
+ },
+ {
+  "name": "JPG \u2192 ICO",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.5,
+  "t": 177.5
+ },
+ {
+  "name": "JPG \u2192 GIF",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.5,
+  "t": 199.9
+ },
+ {
+  "name": "PNG \u2192 JPG",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.3,
+  "t": 222.1
+ },
+ {
+  "name": "PDF \u2192 JPG (3 pages)",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.3,
+  "t": 244.2
+ },
+ {
+  "name": "PDF \u2192 PNG (3 pages)",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.5,
+  "t": 266.5
+ },
+ {
+  "name": "PDF \u2192 DOCX",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.5,
+  "t": 288.9
+ },
+ {
+  "name": "PDF \u2192 TXT",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.5,
+  "t": 311.2
+ },
+ {
+  "name": "DOCX \u2192 PDF",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.2,
+  "t": 332.1
+ },
+ {
+  "name": "DOCX \u2192 TXT",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.6,
+  "t": 354.5
+ },
+ {
+  "name": "TXT \u2192 PDF",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.3,
+  "t": 376.6
+ },
+ {
+  "name": "TXT \u2192 DOCX",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.7,
+  "t": 399.2
+ },
+ {
+  "name": "2 images \u2192 1 PDF",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 22.4,
+  "t": 423.6
+ },
+ {
+  "name": "Compress to 200 KB",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Compress.*",
+  "seconds": 18.7,
+  "t": 444.2
+ },
+ {
+  "name": "Resize 50%",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Resize.*",
+  "seconds": 18.7,
+  "t": 464.8
+ },
+ {
+  "name": "Crop 1:1",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Crop Image.*",
+  "seconds": 18.4,
+  "t": 485.1
+ },
+ {
+  "name": "Edit: auto + rotate",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Edit.*",
+  "seconds": 18.4,
+  "t": 505.3
+ },
+ {
+  "name": "Annotate",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Annotate.*",
+  "seconds": 18.4,
+  "t": 525.6
+ },
+ {
+  "name": "Redact",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Redact.*",
+  "seconds": 18.4,
+  "t": 545.8
+ },
+ {
+  "name": "Add BG 1:1",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Add BG.*",
+  "seconds": 18.4,
+  "t": 566.1
+ },
+ {
+  "name": "Metadata: remove location",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Metadata.*",
+  "seconds": 18.4,
+  "t": 586.3
+ },
+ {
+  "name": "Metadata: remove all",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Metadata.*",
+  "seconds": 18.4,
+  "t": 606.5
+ },
+ {
+  "name": "PDF Compress",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 21.2,
+  "t": 629.5
+ },
+ {
+  "name": "PDF Split",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 21.4,
+  "t": 652.8
+ },
+ {
+  "name": "PDF Rotate",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 21.4,
+  "t": 676.1
+ },
+ {
+  "name": "PDF Protect",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Password-protect.*",
+  "seconds": 18.6,
+  "t": 696.5
+ },
+ {
+  "name": "PDF Extract images",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 21.4,
+  "t": 719.7
+ },
+ {
+  "name": "PDF Metadata",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Metadata.*",
+  "seconds": 18.4,
+  "t": 740.0
+ },
+ {
+  "name": "Merge 2 PDFs",
+  "where": "explorer",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 22.9,
+  "t": 763.5
+ },
+ {
+  "name": "Send To \u2192 PNG",
+  "where": "send-to",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 19.1,
+  "t": 783.2
+ },
+ {
+  "name": "Desktop: JPG \u2192 PNG",
+  "where": "desktop",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.1,
+  "t": 803.2
+ },
+ {
+  "name": "Desktop: PDF \u2192 TXT",
+  "where": "desktop",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.0,
+  "t": 823.9
+ },
+ {
+  "name": "Desktop: DOCX \u2192 PDF",
+  "where": "desktop",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 20.0,
+  "t": 844.5
+ },
+ {
+  "name": "Desktop: Compress",
+  "where": "desktop",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Compress.*",
+  "seconds": 17.9,
+  "t": 863.0
+ },
+ {
+  "name": "Desktop: Crop",
+  "where": "desktop",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Crop Image.*",
+  "seconds": 18.0,
+  "t": 881.6
+ },
+ {
+  "name": "Desktop: Add BG",
+  "where": "desktop",
+  "status": "FAIL",
+  "detail": "RuntimeError: window not found: Add BG.*",
+  "seconds": 18.0,
+  "t": 900.2
+ },
+ {
+  "name": "Desktop: 2 PDFs merge",
+  "where": "desktop",
+  "status": "FAIL",
+  "detail": "AssertionError: no output file appeared",
+  "seconds": 22.3,
+  "t": 923.1
+ },
+ {
+  "name": "Drag picture kept out of the glass",
+  "where": "all",
+  "status": "FAIL",
+  "detail": "hidden during 0 menu captures",
+  "seconds": 0,
+  "t": 0
+ }
+]

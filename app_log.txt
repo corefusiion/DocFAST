@@ -1,0 +1,30 @@
+
+==== DocFAST 1.1.0 started 2026-10-24 14:03:22 ====
+Unhandled: Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\a\DocFAST\DocFAST\docfast\__main__.py", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "D:\a\DocFAST\DocFAST\docfast\app.py", line 634, in main
+    app = DocFASTApp(qapp)
+          ^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\docfast\app.py", line 184, in __init__
+    m.addAction("📊 Status do Sistema & Disco", self.show_system_health)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'DocFASTApp' object has no attribute 'show_system_health'
+
+==== DocFAST 1.1.0 started 2026-10-24 14:16:19 ====
+Unhandled: Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\a\DocFAST\DocFAST\docfast\__main__.py", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "D:\a\DocFAST\DocFAST\docfast\app.py", line 634, in main
+    app = DocFASTApp(qapp)
+          ^^^^^^^^^^^^^^^^
+  File "D:\a\DocFAST\DocFAST\docfast\app.py", line 184, in __init__
+    m.addAction("📊 Status do Sistema & Disco", self.show_system_health)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'DocFASTApp' object has no attribute 'show_system_health'
