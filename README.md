@@ -2,189 +2,213 @@
 
 ![DocFAST Banner](docs/banner.png)
 
-# DocFAST
+# DocFAST PRO
+### Sistema Radial Instantâneo de Conversão, Edição e Assistência por Inteligência Artificial
+*Manipulação de documentos, planilhas, PDFs e imagens com interface Liquid-Glass de alta fidelidade para Windows, macOS e Linux.*
 
-**Conversor & Editor Instantâneo com Menu Radial em Liquid-Glass**  
-*Produtividade extrema na ponta do seu cursor para Windows, macOS e Linux.*
+---
 
-[![Build Windows](https://img.shields.io/github/actions/workflow/status/corefusiion/DocFAST/build.yml?branch=main&style=for-the-badge&label=Build%20Windows&logo=github)](https://github.com/corefusiion/DocFAST/actions)
-[![Versão](https://img.shields.io/badge/versão-1.1.0--PRO-blue.svg?style=for-the-badge)](https://github.com/corefusiion/DocFAST/releases/latest)
-[![Licença](https://img.shields.io/badge/licença-MIT-green.svg?style=for-the-badge)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.11+-3776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Plataformas](https://img.shields.io/badge/plataformas-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg?style=for-the-badge)]()
+[![Status da Build](https://img.shields.io/github/actions/workflow/status/corefusiion/DocFAST/build.yml?branch=main&style=flat-square&label=Build%20Windows&logo=github&color=2563EB)](https://github.com/corefusiion/DocFAST/actions)
+[![Versão](https://img.shields.io/badge/versão-1.1.0--PRO-0EA5E9?style=flat-square)](https://github.com/corefusiion/DocFAST/releases/latest)
+[![Python](https://img.shields.io/badge/python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![Licença](https://img.shields.io/badge/licença-MIT-10B981?style=flat-square)](LICENSE)
+[![Plataformas](https://img.shields.io/badge/plataformas-Windows%20%7C%20macOS%20%7C%20Linux-64748B?style=flat-square)]()
 
-<p align="center">
-  <a href="#-o-que-é-o-docfast">Sobre</a> •
-  <a href="#-principais-recursos">Recursos</a> •
-  <a href="#-como-usar">Como Usar</a> •
-  <a href="#-matriz-de-conversões-e-ferramentas">Conversões</a> •
-  <a href="#-tecnologia-e-visual">Design</a> •
-  <a href="#-instalação-e-download">Instalação</a> •
-  <a href="#-créditos-e-desenvolvimento">Créditos</a> •
-  <a href="#-apoie-o-projeto--doação">Doação</a>
-</p>
+<br>
+
+[Visão Geral](#-visão-geral) • [Recursos Centrais](#-recursos-centrais) • [Galeria Visual](#-galeria-visual-da-interface) • [Matriz de Conversões](#-matriz-completa-de-conversões-e-ferramentas) • [Download](#-instalação-e-download) • [Desenvolvimento](#-execução-e-compilação) • [Créditos](#-créditos-e-desenvolvimento)
 
 ---
 
 </div>
 
-## 🚀 O que é o DocFAST?
+## ⬡ Visão Geral
 
-O **DocFAST** é uma ferramenta de produtividade projetada para transformar completamente como você trabalha com arquivos diários. 
+O **DocFAST** redefine a velocidade de processamento de arquivos no ambiente corporativo e de trabalho diário. Em vez de depender de suítes de escritório pesadas ou serviços em nuvem inseguros com limites de upload e anúncios, o DocFAST opera **100% localmente com aceleração gráfica**.
 
-Esqueça o processo lento de abrir programas pesados como Adobe Acrobat, Photoshop ou sites de terceiros cheios de anúncios só para converter uma planilha, assinar um contrato, juntar imagens em PDF ou recortar um documento:
+Quando você começa a arrastar um arquivo ou pasta e pressiona uma tecla de atalho (`Shift`, `Ctrl` ou `Alt`), um **menu radial translúcido em estilo Liquid-Glass** é projetado diretamente sob o cursor do mouse. Ao soltar sobre a fatia correspondente, a conversão, assinatura, extração ou assistência por IA é executada instantaneamente em segundo plano.
 
-> **Com o DocFAST, basta arrastar qualquer arquivo no seu computador, pressionar a tecla `Shift` e soltar na fatia desejada do menu radial translúcido.**
-
-O arquivo convertido ou editado é salvo instantaneamente ao lado do original, sem alterar seu arquivo de origem!
-
----
-
-## ✨ Principais Recursos
-
-### 1. ✍️ Assinatura e Carimbo Visual em PDF
-* **Pad de Assinatura Integrado**: Desenhe sua assinatura com mouse ou caneta stylus com suavização vetorial.
-* **Carregamento de Imagem de Rubrica**: Importe uma foto da sua assinatura ou carimbo. O DocFAST **remove o fundo branco automaticamente**, gerando transparência perfeita.
-* **Posicionamento Visual**: Arraste e redimensione a assinatura diretamente sobre a página do contrato.
-* **Aplicação Flexível**: Aplique na página atual, apenas na última página ou em todas as folhas do documento com 1 clique.
-* **Salvamento Inteligente**: Salve ao lado do original como `(Assinado).pdf` ou utilize `Salvar Como…` para escolher qualquer pasta.
-
-### 2. 📊 Conversões Avançadas de Planilhas
-* Suporte nativo para **Excel (.xlsx, .xls)** e **CSV (.csv)**.
-* Converta planilhas diretamente para **PDF formatado**, **JSON estruturado**, **Tabela HTML** ou exporte para outros formatos sem precisar abrir o Office.
-
-### 3. 🖼️ Conversão Inteligente de Múltiplas Imagens
-* **PDF (1 doc)**: Selecione dezenas de imagens em uma pasta e junte todas em **um único PDF consolidado** na ordem correta.
-* **PDF (sep)**: Converta todas as imagens em PDFs individuais com apenas um movimento.
-* Conversões em lote entre formatos de imagem modernos: **PNG, JPG, WEBP, AVIF, HEIC, TIFF, BMP, ICO**.
-
-### 4. 📑 Organizador Visual de Páginas de PDF (Thumbnail Grid)
-* Visualize as miniaturas de todas as páginas do PDF em uma grade interativa.
-* **Reorganização Drag & Drop**: Arraste para alterar a ordem das páginas livremente.
-* **Rotação Individual**: Gire páginas digitalizadas de cabeça para baixo em 90°, 180° ou 270°.
-* **Exclusão Rápida**: Remova páginas em branco ou desnecessárias com uma tecla.
-
-### 5. 🤖 Ajuda AI & Ajuda AI Plus (Assistente Inteligente Windows)
-* **Onipresente no Windows**: Selecione textos ou dados em qualquer planilha do Excel, documento do Word, site web, terminal ou ERP, e acione **Ajuda AI** para abrir um chat translúcido inteligente.
-* **Ajuda AI Plus (Visão Computacional)**: Captura instantaneamente a tela sob o cursor e envia junto ao modelo de IA para analisar erros, planilhas complexas, interfaces e códigos visuais.
-* **Múltiplos Provedores Modernos**: Suporte nativo a **Google Gemini** (Gemini 2.5 Flash, 2.5 Pro), **OpenAI** (GPT-4o, GPT-4o-mini, o3-mini), **Anthropic Claude** (Claude 3.7 Sonnet) e **Modelos Locais** (Ollama / OpenCode).
-* **Fixação na Tela (📌)** e **Histórico Persistente**: Mantenha o chat fixo ao lado da sua janela de trabalho e retome conversas anteriores sem perder o contexto.
-* **Testador de API em Tempo Real**: Valide sua chave de API e modelo diretamente nas Configurações com o botão *⚡ Testar Conexão*.
-
-### 6. 📋 Captura de Tela (PrintScreen Snipper) & Salvamento no Desktop
-* **Captura de Tela com Seleção**: Selecione qualquer região da tela pelo menu da bandeja e converta na hora para **PNG, JPG, PDF**, envie para **Anotações** ou analise com **Ajuda AI**.
-* **Colar da Área de Transferência Direto no Desktop**: Pressione `Ctrl + C` em qualquer texto ou imagem e salve direto na sua **Área de Trabalho (Desktop)** como **TXT, DOCX, PDF** ou inicie uma conversa com IA.
-
-### 7. 📦 Compactação e Extração ZIP para Qualquer Arquivo ou Pasta
-* Selecione pastas, planilhas com macros (`.xlsm`, `.xlsb`), executáveis ou arquivos genéricos e acione **Zip (Normal)** ou **Zip (Max)** com compressão de alta densidade.
-* Extraia arquivos `.zip` em milissegundos sem abrir descompactadores pesados.
-
-### 8. 🎨 Interface Liquid-Glass com 5 Novos Temas Suaves com Tecnologia Acrílica
-* Renderização translúcida real que desfoca e refrata a área de trabalho em tempo real, com borda iridescente (arco-íris).
-* Notificações flutuantes em formato de cartões de vidro com botões rápidos: **Abrir**, **Mostrar na Pasta** e **Desfazer** (envia o arquivo criado para a Lixeira).
-
-### 9. 🇧🇷 Interface 100% em Português (com seletor PT-BR / EN)
-* Menus, janelas e dicas totalmente localizados para Português do Brasil, com opção de alternar dinamicamente para Inglês nas Configurações.
+```
+Arrastar Arquivo ──▶ Pressionar [Shift] ──▶ Menu Radial Projetado ──▶ Soltar na Ação ──▶ Concluído em ms
+```
 
 ---
 
-## 🎮 Como Usar
+## ✦ Recursos Centrais
 
-![DocFAST Radial Menu](docs/preview.png)
-
-1. **Selecione e Arraste**: Comece a arrastar um arquivo ou pasta no Windows Explorer, Finder ou desktop.
-2. **Pressione a Tecla de Disparo**: Aperte a tecla **Shift** (configurável para Ctrl ou Alt). O menu radial em formato de vidro surgirá instantaneamente sob o cursor.
-3. **Solte o Arquivo**: Solte o mouse sobre a fatia da conversão ou ferramenta desejada.
-4. **Alterne entre Anéis**: Pressione **Shift** novamente enquanto o menu estiver aberto para alternar entre o anel de **Conversão** e o anel de **Ferramentas**.
-
-> **Dica:** Você também pode clicar com o botão direito no arquivo e escolher **DocFAST…**, usar o menu **Enviar para → DocFAST** ou usar o ícone na bandeja do sistema.
+### 1. Assistente Inteligente Windows: Ajuda AI & Ajuda AI Plus
+* **Onipresença Operacional:** O assistente não fica preso ao navegador. Você pode selecionar qualquer texto ou dado em **células do Excel, documentos do Word, leitores de PDF, terminais, sistemas legados ou ERPs corporativos** e acionar o `Ajuda AI`.
+* **Ajuda AI Plus com Visão Multimodal:** Captura a tela de forma imperceptível no instante do acionamento e anexa ao modelo de IA para analisar tabelas, gráficos, erros visuais na tela ou layouts de contratos.
+* **Ecossistema Multimodelo (2025/2026):**
+  * **Google Gemini:** `gemini-2.5-flash` *(Ultra rápido e recomendado)*, `gemini-2.5-pro`, `gemini-2.0-flash`.
+  * **OpenAI (ChatGPT):** `gpt-4o-mini`, `gpt-4o`, `o3-mini`, `gpt-4.5-preview`.
+  * **Anthropic Claude:** `claude-3-7-sonnet`, `claude-3-5-sonnet`, `claude-3-5-haiku`.
+  * **Ambiente Local / OpenCode:** Suporte direto ao Ollama / OpenCode (`llama3.3`, `qwen2.5-coder`, `deepseek-r1`) com endpoint customizado para ambientes corporativos desconectados da internet.
+* **Interface Docked com Fixação (📌):** A janela de chat fixa-se na lateral direita da sua área de trabalho enquanto você continua navegando ou alterando planilhas, mantendo o histórico de conversas gravado localmente.
+* **Validação de API em Tempo Real:** Botão `⚡ Testar Conexão` integrado nas preferências para checar latência e credenciais antes de salvar.
 
 ---
 
-## 📊 Matriz de Conversões e Ferramentas
+### 2. Assinatura e Carimbo Digital de Alta Resolução em PDFs
+* **Remoção Inteligente de Fundo:** Fotografe ou digitalize sua rubrica em folha de papel. O DocFAST analisa o limiar de luminância de cada pixel e elimina o fundo cinza/branco, preservando apenas o traço original com transparência perfeita.
+* **Pad Vetorial de Desenho:** Assine na hora utilizando o mouse ou canetas stylus com suavização de curva vetorial e antialiasing contínuo.
+* **Aplicação Flexível:** Posicione e redimensione com preview em tempo real. Escolha aplicar na página atual, na última página ou em todas as folhas do contrato de forma automática.
+* **Opções de Exportação:** Salve ao lado do original como `(Assinado).pdf` ou utilize o explorador nativo para salvar em qualquer pasta de rede.
 
-| Tipo de Arquivo | Conversão Disponível | Ferramentas Visuais Integradas |
-|---|---|---|
-| **Imagens** <br>*(JPG, PNG, WEBP, HEIC, AVIF, TIFF, BMP, GIF, ICO)* | Qualquer formato de imagem ou **PDF** (juntar em 1 PDF ou PDFs separados) | **Compactar** (por qualidade ou tamanho alvo ex: "< 500 KB") • **Redimensionar** • **Recortar** • **Anotar** (setas, caixas, texto, marcador) • **Tarjar** (censura permanente) • **Adicionar Fundo** (gradiente) • **Editar** (cor, luz, contraste, P&B) • **Metadados** (limpeza de GPS e EXIF) |
-| **Documentos PDF** | **JPG / PNG** (uma imagem por página), **DOCX** (Word editável), **TXT** | **✍️ Assinar / Carimbar** • **📑 Organizar Páginas** (reordenar, girar, excluir) • **Juntar PDFs** • **Dividir PDF** • **Compactar** • **Proteger com Senha (AES-256)** • **Extrair Imagens** |
-| **Planilhas** <br>*(XLSX, XLS, XLSM, XLSB, CSV)* | **PDF**, **CSV**, **JSON**, **HTML**, **XLSX** | Visualização rápida de dados e conversão tabular em lote |
-| **Documentos Word** <br>*(DOCX)* | **PDF** (renderização nativa de alta fidelidade), **TXT** | Conversão veloz de relatórios e contratos |
-| **Textos & Markdown** <br>*(TXT, MD)* | **PDF**, **DOCX** | Formatação limpa para leitura e compartilhamento |
-| **Captura / Clipboard** | **PNG**, **JPG**, **PDF**, **TXT**, **DOCX**, **Desktop** | Salva na Área de Trabalho ou analisa com Ajuda AI |
-| **Pastas & Arquivos Genéricos** | **Zip (Normal)**, **Zip (Max)**, **Extrair** | Compactação rápida e extração direta |
+---
+
+### 3. Reorganização Visual de Páginas (Thumbnail Grid)
+* **Reordenação Drag & Drop:** Visualize todas as páginas do PDF em uma grade interativa e reordene páginas arrastando miniaturas.
+* **Rotação e Exclusão Individual:** Corrija documentos escaneados de cabeça para baixo com rotação de 90°/180° e remova páginas em branco com um clique.
+
+---
+
+### 4. Engenharia de Planilhas Corporativas
+* Suporte nativo para **Excel (.xlsx, .xls, .xlsm com macros, .xlsb)** e arquivos tabulares **CSV/TSV**.
+* Conversão direta para **PDF formatado** (com cabeçalhos e larguras proporcionais calculadas), **JSON estruturado** e **tabelas HTML responsivas** sem depender do Microsoft Office instalado.
+
+---
+
+### 5. Conversão em Lote de Imagens
+* **PDF Único (Consolidado):** Selecione dezenas de comprovantes, notas ou imagens e agrupe em um único PDF em ordem sequencial.
+* **PDFs Separados:** Converte cada imagem de um diretório em seu respectivo arquivo PDF individual em lote.
+* Suporte universal: **PNG, JPG, WEBP, AVIF, HEIC/HEIF (iOS), TIFF, BMP, ICO e GIF**.
+
+---
+
+### 6. Área de Transferência & Integração com Desktop
+* **Salvamento Direto na Área de Trabalho:** Ao acionar o DocFAST pela área de transferência, seus arquivos são salvos diretamente no seu Desktop (`Área de Trabalho`), com suporte a ambientes sincronizados pelo OneDrive.
+* **Menu de Ações Rápidas de Texto:** Ao copiar qualquer bloco de texto, o DocFAST oferece opções para salvar diretamente como **TXT**, documento **DOCX**, documento **PDF** ou iniciar o diálogo de **Ajuda AI**.
+
+---
+
+### 7. Compactação e Extração ZIP Nativa
+* Para pastas inteiras, executáveis, arquivos desconhecidos ou planilhas com macros:
+  * **Zip (Normal):** Compactação rápida multithread para compartilhamento ágil.
+  * **Zip (Max):** Compressão máxima (nível 9) para redução extrema de tamanho.
+  * **Extrair:** Descompactação instantânea de arquivos `.zip` em uma pasta limpa ao lado do arquivo.
+
+---
+
+### 8. Motor Visual Liquid-Glass com 5 Temas Suaves
+* Efeito de vidro translúcido acrílico (Windows DWM API e shaders SDF).
+* 5 Paletas de cores suaves para combinar com qualquer preferência:
+  * **Aurora Violeta** *(Padrão contemporâneo)*
+  * **Preto Transparente Glass** *(Dark minimalista de alto contraste)*
+  * **Cinza Suave Translúcido** *(Slate corporativo neutro)*
+  * **Azul Fraco Suave** *(Sky Blue descansado)*
+  * **Verde Menta Suave** *(Mint Frost equilibrado)*
+
+---
+
+## 📸 Galeria Visual da Interface
+
+<div align="center">
+
+### Menu Radial Translúcido Liquid-Glass
+*Projetado sob o cursor em milissegundos ao pressionar a tecla de gatilho durante o arrasto de arquivos.*
+
+![DocFAST Menu Radial](docs/preview.png)
+
+<br>
+
+| 🤖 Ajuda AI Multimodal | ⚙️ Configurações & Provedores LLM |
+| :---: | :---: |
+| ![DocFAST AI Chat](docs/ai_chat_preview.png) | ![DocFAST Configurações](docs/settings_preview.png) |
+| *Chat lateral flutuante com suporte a código e visão de tela* | *Seleção de temas visuais e validação de chaves de API* |
+
+<br>
+
+| ✍️ Assinatura & Carimbo em PDF | 📑 Organizador Visual de Páginas |
+| :---: | :---: |
+| ![DocFAST Assinatura PDF](docs/pdf_sign_preview.png) | ![DocFAST Organizador de Páginas](docs/pdf_organize_preview.png) |
+| *Remoção automática de fundo branco e posicionamento visual* | *Grade interativa com reordenação por arrasto e rotação* |
+
+</div>
+
+---
+
+## 📊 Matriz Completa de Conversões e Ferramentas
+
+| Categoria | Formatos de Origem | Formatos de Saída | Ferramentas Visuais Integradas |
+| :--- | :--- | :--- | :--- |
+| **Imagens** | JPG, PNG, WEBP, HEIC, AVIF, TIFF, BMP, ICO, GIF | PNG, JPG, WEBP, AVIF, TIFF, BMP, ICO, PDF | Compactar (tamanho alvo), Redimensionar, Recortar, Anotar, Tarjar (censura), Fundo gradiente, Filtros de cor, Limpeza de Metadados EXIF/GPS |
+| **Documentos PDF** | PDF | JPG, PNG, DOCX (Word), TXT | ✍️ Assinar / Carimbar, 📑 Organizar Páginas, Juntar PDFs, Dividir PDF, Compactar, Proteger por Senha (AES-256), Extrair Imagens |
+| **Planilhas** | XLSX, XLS, XLSM, XLSB, CSV, TSV | PDF formatado, XLSX, CSV, JSON, HTML | Visualização rápida de dados, exportação estruturada |
+| **Documentos Word** | DOCX | PDF, TXT | Conversão veloz de contratos e relatórios |
+| **Textos & Notas** | TXT, MD | PDF, DOCX | Renderização tipográfica limpa |
+| **Área de Transferência** | Clipboard (PrintScreen ou Texto) | PNG, JPG, PDF, TXT, DOCX, Desktop | ✨ Ajuda AI, Anotações com setas, salvamento no Desktop |
+| **Pastas & Arquivos Diversos** | Pastas, ZIP, Arquivos Genéricos | Zip (Normal), Zip (Max), Extrair | Compactação e extração de pastas sem programas pesados |
 
 ---
 
 ## 📥 Instalação e Download
 
-Baixe os executáveis prontos para uso diretamente na página oficial de lançamentos:
+Baixe as versões finais compiladas diretamente da página oficial de lançamentos:
 
 👉 **[Download da Última Versão do DocFAST (GitHub Releases)](https://github.com/corefusiion/DocFAST/releases/latest)**
 
-> **💡 Ideal para compartilhar com colegas de trabalho:**  
-> O aplicativo é compilado automaticamente pelo **GitHub Actions** em executáveis 100% autossuficientes. Seus colegas **não precisam** instalar Python, Git ou bibliotecas na máquina deles! Basta baixar e usar:
-
-* 📦 **DocFAST-Setup.exe** *(Recomendado para Windows)*: Instalador completo por usuário (não exige privilégios de administrador). Adiciona o DocFAST ao menu Iniciar, inicialização automática opcional e atalho no menu de contexto do botão direito do mouse (*"DocFAST…"* e *"Enviar para → DocFAST"*).
-* ⚡ **DocFAST.exe** *(Portátil / Standalone)*: Executável único de clique duplo. Não instala nada no sistema operacional, perfeito para rodar direto de um pendrive ou pasta temporária.
-* 🍏 **macOS**: Imagem `.dmg` nativa para processadores Apple Silicon (M1/M2/M3/M4) e Intel.
-* 🐧 **Linux**: Pacote `.deb` compatível com Debian 12+, Ubuntu 23.04+, Linux Mint e derivados.
+### Opções para Windows:
+* **📦 DocFAST-Setup.exe (Recomendado):** Instalador para usuário (não exige privilégios de administrador). Cria atalhos no Menu Iniciar, inicialização opcional com o Windows e integração com o menu de contexto do botão direito do mouse (*"DocFAST…"* e *"Enviar para → DocFAST"*).
+* **⚡ DocFAST.exe (Portátil / Standalone):** Executável único de clique duplo. Não requer instalação, funcionando perfeitamente em pendrives ou pastas compartilhadas de trabalho.
 
 ---
 
-## 🛠️ Executar pelo Código-Fonte
+## 🛠️ Execução e Compilação
 
-Requisitos: Python 3.11+ instalado.
+Para executar ou colaborar no desenvolvimento do código-fonte:
+
+### Requisitos:
+* Python 3.11 ou superior
+* Sistema operacional: Windows 10/11, macOS 12+ ou Linux moderno
 
 ```bash
-# Clone o repositório
+# 1. Clonar o repositório
 git clone https://github.com/corefusiion/DocFAST.git
 cd DocFAST
 
-# Instale as dependências
+# 2. Criar e ativar o ambiente virtual
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1    # No Windows PowerShell
+# source .venv/bin/activate     # No Linux / macOS
+
+# 3. Instalar dependências
 pip install -r requirements.txt
 
-# Execute a aplicação
+# 4. Executar a aplicação
 python run.py
 ```
 
-### Rodar os Testes Unitários:
+### Validações e Testes:
 ```bash
+# Executar a suíte de testes unitários (35 testes)
 python -m pytest -v
+
+# Executar o autoteste de integridade do executável
+python run.py --selftest
 ```
 
-### Auto-teste de Validação:
+### Compilação do Executável com PyInstaller:
 ```bash
-python run.py --selftest
+# Compilar versão de pasta (base para o instalador)
+pyinstaller DocFAST.spec --noconfirm
+
+# Compilar versão portátil única (DocFAST.exe)
+$env:ONEFILE="1"; pyinstaller DocFAST.spec --noconfirm
 ```
 
 ---
 
 ## 👨‍💻 Créditos e Desenvolvimento
 
-O **DocFAST** foi remodelado, expandido e construído com dedicação por:
-
-* **Desenvolvedor:** **Gleisson Santos**
-* **Portal Oficial:** [**https://docfastbr.app/**](https://docfastbr.lovable.app/)
-* **Tecnologias:** Python 3.11, PySide6 (Qt6), PyMuPDF (Fitz), Pillow, openpyxl, Windows Acrylic APIs.
-
----
-
-## 💖 Apoie o Projeto / Doação
-
-O DocFAST é um software de código aberto, livre para uso pessoal e comercial. Se este projeto acelerou seu trabalho diário, economizou tempo na conversão de planilhas ou na assinatura de contratos, considere fazer uma contribuição para apoiar a continuidade e novos recursos:
+* **Autor e Desenvolvedor:** **Gleisson Santos**  
+* **Repositório GitHub:** [https://github.com/corefusiion/DocFAST](https://github.com/corefusiion/DocFAST)  
+* **Portal de Distribuição e Apoio:** [https://docfastbr.lovable.app/](https://docfastbr.lovable.app/)  
+* **Licença:** Código aberto sob a licença [MIT](LICENSE).
 
 <div align="center">
 
-[![Doação e Apoio](https://img.shields.io/badge/Apoiar%20o%20Desenvolvedor-docfastbr.app-2563EB?style=for-the-badge&logo=heart&logoColor=white)](https://docfastbr.lovable.app/)
-
-👉 **Contribua através da nossa página oficial:** [**https://docfastbr.app/**](https://docfastbr.lovable.app/)
-
-*Obrigado por utilizar o DocFAST!*
+Se o **DocFAST** aumentou a sua produtividade diária, apoie o projeto e o desenvolvimento de novas funcionalidades através do nosso portal oficial:  
+👉 [**https://docfastbr.lovable.app/**](https://docfastbr.lovable.app/)
 
 </div>
-
----
-
-## 📄 Licença
-
-Distribuído sob a licença [MIT](LICENSE). Consulte o arquivo `LICENSE` para mais informações.
