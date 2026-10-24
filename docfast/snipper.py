@@ -1,203 +1,184 @@
-"""DocFAST Screen Snipping Tool & Clipboard Integration:
-Allows user to capture any screen region (Print) and convert to PNG, JPG, PDF or Annotate,
-or convert clipboard image/text immediately with DocFAST.
+"""Screen snipper tool + clipboard actions dialogs for DocFAST.
+Allows taking region print screens, annotating, saving as PNG/JPG/PDF,
+copying to clipboard, and analyzing with DocFAST AI Assistant.
 """
 from __future__ import annotations
 
-import tempfile
+import io
 from pathlib import Path
 from PIL import Image
 
-from PySide6.QtCore import QPoint, QPointF, QRect, QRectF, QSize, Qt, Signal
+from PySide6.QtCore import QPoint, QRect, Qt
 from PySide6.QtGui import (QBrush, QColor, QCursor, QFont, QGuiApplication,
-                            QImage, QPainter, QPainterPath, QPen, QPixmap)
-from PySide6.QtWidgets import (QApplication, QDialog, QFileDialog, QHBoxLayout, QLabel,
-                               QPushButton, QVBoxLayout, QWidget)
+                            QPainter, QPen, QPixmap)
+from PySide6.QtWidgets import (QApplication, QDialog, QFileDialog, QHBoxLayout,
+                                QLabel, QPushButton, QTextEdit, QVBoxLayout, QWidget)
 
-from . import glass, imaging
-from .util import human_size, unique_path
+from .util import desktop_dir, unique_path
+from .window import GlassWindow
 
 
 class ScreenSnipper(QWidget):
-    """Fullscreen screen snipper with dimmed background and rectangular selection."""
-    def __init__(self, on_snip_callback=None):
-        super().__init__()
+    """Full-screen dim overlay for selecting a region to screenshot."""
+
+    def __init__(self, on_snip_callback):
+        super().__init__(None)
         self.on_snip = on_snip_callback
-        self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+        self.setAttribute(Qt.WA_TranslucentBackground)
         self.setCursor(Qt.CrossCursor)
-        
-        # Calculate virtual desktop geometry across all connected screens
-        screens = QGuiApplication.screens()
-        total_rect = QRect()
-        for s in screens:
-            total_rect = total_rect.united(s.geometry())
-        self.geom = total_rect if not total_rect.isEmpty() else QGuiApplication.primaryScreen().geometry()
-        self.setGeometry(self.geom)
-        
-        # Capture the entire desktop
-        screen = QGuiApplication.primaryScreen()
-        self.screenshot = screen.grabWindow(0)
-        
-        self.start_pt: QPoint | None = None
-        self.curr_pt: QPoint | None = None
-        self.snip_rect = QRect()
+
+        # Virtual geometry covers all monitors
+        geo = QRect()
+        for scr in QGuiApplication.screens():
+            geo = geo.united(scr.geometry())
+        self.setGeometry(geo)
+
+        # Full capture
+        primary = QGuiApplication.primaryScreen()
+        self.full_pix = primary.grabWindow(0) if primary else QPixmap()
+        self.origin = QPoint()
+        self.current = QPoint()
+        self.is_selecting = False
+
+    def paintEvent(self, event):
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+
+        # Dim entire desktop
+        p.fillRect(self.rect(), QColor(0, 0, 0, 110))
+
+        if self.is_selecting:
+            r = QRect(self.origin, self.current).normalized()
+            if r.isValid() and r.width() > 1 and r.height() > 1:
+                # Clear selected area so desktop shows normally
+                p.setCompositionMode(QPainter.CompositionMode_Clear)
+                p.fillRect(r, Qt.transparent)
+                p.setCompositionMode(QPainter.CompositionMode_SourceOver)
+
+                # Blue border + dimensions
+                p.setPen(QPen(QColor("#5ac8ff"), 2))
+                p.setBrush(Qt.NoBrush)
+                p.drawRect(r)
+
+                dim_txt = f"{r.width()} × {r.height()}"
+                p.setPen(Qt.NoPen)
+                p.setBrush(QColor(0, 0, 0, 180))
+                p.drawRoundedRect(QRect(r.left(), max(0, r.top() - 24), 90, 20), 4, 4)
+                p.setPen(QColor("#ffffff"))
+                p.setFont(QFont("Segoe UI", 9, QFont.Bold))
+                p.drawText(QRect(r.left(), max(0, r.top() - 24), 90, 20), Qt.AlignCenter, dim_txt)
 
     def mousePressEvent(self, e):
         if e.button() == Qt.LeftButton:
-            self.start_pt = e.position().toPoint()
-            self.curr_pt = self.start_pt
+            self.origin = e.position().toPoint()
+            self.current = self.origin
+            self.is_selecting = True
             self.update()
         elif e.button() == Qt.RightButton:
             self.close()
 
     def mouseMoveEvent(self, e):
-        if self.start_pt is not None:
-            self.curr_pt = e.position().toPoint()
-            self.snip_rect = QRect(self.start_pt, self.curr_pt).normalized()
+        if self.is_selecting:
+            self.current = e.position().toPoint()
             self.update()
 
     def mouseReleaseEvent(self, e):
-        if e.button() == Qt.LeftButton and self.start_pt is not None:
-            rect = self.snip_rect
+        if e.button() == Qt.LeftButton and self.is_selecting:
+            self.is_selecting = False
+            r = QRect(self.origin, self.current).normalized()
             self.close()
-            if rect.width() > 10 and rect.height() > 10:
-                # Handle DPI scaling properly
-                scale_x = self.screenshot.width() / max(1, self.width())
-                scale_y = self.screenshot.height() / max(1, self.height())
-                crop_rect = QRect(
-                    int(rect.x() * scale_x),
-                    int(rect.y() * scale_y),
-                    int(rect.width() * scale_x),
-                    int(rect.height() * scale_y)
-                )
-                cropped = self.screenshot.copy(crop_rect)
-                if self.on_snip:
-                    self.on_snip(cropped)
+            if r.width() > 5 and r.height() > 5:
+                # High-DPI coordinate mapping
+                screen = QGuiApplication.screenAt(r.center()) or QGuiApplication.primaryScreen()
+                dpr = screen.devicePixelRatio() if screen else 1.0
+                mapped = QRect(int(r.x() * dpr), int(r.y() * dpr), int(r.width() * dpr), int(r.height() * dpr))
+                snip = self.full_pix.copy(mapped)
+                if not snip.isNull():
+                    self.on_snip(snip)
 
     def keyPressEvent(self, e):
-        if e.key() == Qt.Key_Escape:
+        if e.key() in (Qt.Key_Escape, Qt.Key_Q):
             self.close()
 
-    def paintEvent(self, e):
-        p = QPainter(self)
-        p.setRenderHint(QPainter.Antialiasing)
-        
-        # 1. Draw raw screenshot scaled to window bounds
-        p.drawPixmap(self.rect(), self.screenshot)
-        
-        # 2. Dim entire screen except selection
-        path_all = QPainterPath()
-        path_all.addRect(QRectF(self.rect()))
-        
-        if not self.snip_rect.isEmpty():
-            path_sel = QPainterPath()
-            path_sel.addRect(QRectF(self.snip_rect))
-            dim_path = path_all.subtracted(path_sel)
-            p.fillPath(dim_path, QColor(0, 0, 0, 140))
-            
-            # Selection border
-            p.setPen(QPen(QColor("#2563eb"), 2))
-            p.drawRect(self.snip_rect)
-            
-            # Dimension badge
-            txt = f"{self.snip_rect.width()} × {self.snip_rect.height()} px"
-            p.setFont(QFont("Segoe UI", 10, QFont.Bold))
-            badge_rect = QRect(self.snip_rect.left(), max(10, self.snip_rect.top() - 26), 130, 24)
-            p.fillRect(badge_rect, QColor(15, 23, 42, 220))
-            p.setPen(QColor(255, 255, 255))
-            p.drawText(badge_rect, Qt.AlignCenter, txt)
-        else:
-            p.fillPath(path_all, QColor(0, 0, 0, 120))
-            # Hint text
-            p.setFont(QFont("Segoe UI", 14, QFont.Bold))
-            p.setPen(QColor(255, 255, 255))
-            p.drawText(self.rect(), Qt.AlignCenter, "Arraste com o mouse para selecionar a área do Print\n(Pressione Esc ou clique com o botão direito para cancelar)")
 
+class SnipActionDialog(GlassWindow):
+    """Floating action dialog shown after screen capture or image paste."""
 
-class SnipActionDialog(QDialog):
-    """Action popup shown right after taking a screen snip."""
-    def __init__(self, pixmap: QPixmap, app_ref=None, parent=None):
-        super().__init__(parent)
+    def __init__(self, pixmap: QPixmap, app_ref=None):
+        super().__init__("Captura de Tela — DocFAST", size=(440, 220))
         self.pix = pixmap
         self.app = app_ref
-        self.setWindowTitle("Print Capturado — DocFAST")
-        self.setFixedSize(490, 250)
-        self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
-        self.setStyleSheet("""
-            QDialog { background: #1e1e2e; border: 2px solid rgba(59, 130, 246, 0.6); border-radius: 14px; }
-            QLabel { color: #f8fafc; font-family: 'Segoe UI', sans-serif; }
-            QPushButton { background: #334155; color: white; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 14px; font-weight: 600; font-size: 13px; font-family: 'Segoe UI', sans-serif; }
-            QPushButton:hover { background: #475569; border-color: rgba(255,255,255,0.35); }
-            QPushButton#primary { background: #2563eb; border: 1px solid #3b82f6; }
-            QPushButton#primary:hover { background: #1d4ed8; }
-            QPushButton#chrome { background: transparent; border: none; font-size: 14px; color: #94a3b8; }
-            QPushButton#chrome:hover { color: #f87171; background: rgba(255,255,255,0.08); }
-        """)
-        
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(18, 16, 18, 16)
-        layout.setSpacing(12)
-        
+
+        layout = self.body
+        layout.setSpacing(10)
+
+        # Header with dims
         header = QHBoxLayout()
-        title = QLabel(f"<b>Print Capturado:</b> {self.pix.width()} × {self.pix.height()} px")
-        title.setStyleSheet("font-size: 15px; color: #60a5fa;")
-        header.addWidget(title)
+        lbl_info = QLabel(f"Dimensões: {self.pix.width()} × {self.pix.height()} px")
+        lbl_info.setStyleSheet("color: rgba(255,255,255,0.7); font-size: 9pt;")
+        header.addWidget(lbl_info)
         header.addStretch(1)
-        
-        btn_x = QPushButton("✕")
-        btn_x.setObjectName("chrome")
-        btn_x.setFixedSize(28, 28)
-        btn_x.clicked.connect(self.close)
-        header.addWidget(btn_x)
         layout.addLayout(header)
-        
+
+        # Row 1: Direct Save options to Desktop
         row1 = QHBoxLayout()
-        btn_png = QPushButton("Salvar PNG")
+        btn_png = QPushButton("Salvar PNG (Desktop)")
         btn_png.setObjectName("primary")
         btn_png.clicked.connect(lambda: self._save_file(".png"))
-        btn_jpg = QPushButton("Salvar JPG")
+
+        btn_jpg = QPushButton("Salvar JPG (Desktop)")
         btn_jpg.clicked.connect(lambda: self._save_file(".jpg"))
-        btn_pdf = QPushButton("Salvar PDF")
+
+        btn_pdf = QPushButton("Salvar PDF (Desktop)")
         btn_pdf.clicked.connect(lambda: self._save_file(".pdf"))
+
         row1.addWidget(btn_png)
         row1.addWidget(btn_jpg)
         row1.addWidget(btn_pdf)
         layout.addLayout(row1)
-        
+
+        # Row 2: Annotate + AI Analysis
         row2 = QHBoxLayout()
-        btn_copy = QPushButton("📋 Copiar para Área de Transferência")
+        btn_copy = QPushButton("📋 Copiar")
         btn_copy.clicked.connect(self._copy_clipboard)
+
         btn_annotate = QPushButton("✎ Anotar / Desenhar")
         btn_annotate.clicked.connect(self._annotate)
+
+        btn_ai = QPushButton("✨ Analisar com Ajuda AI")
+        btn_ai.setStyleSheet("background: qlineargradient(x1:0,y1:0,x2:1,y2:1, stop:0 #7b8cff, stop:1 #4f46e5); font-weight: 700;")
+        btn_ai.clicked.connect(self._ask_ai)
+
         row2.addWidget(btn_copy)
         row2.addWidget(btn_annotate)
+        row2.addWidget(btn_ai)
         layout.addLayout(row2)
 
     def _temp_png_path(self) -> Path:
-        d = Path(tempfile.gettempdir()) / "DocFAST"
-        d.mkdir(parents=True, exist_ok=True)
-        p = d / "docfast_snip.png"
+        desk = desktop_dir()
+        p = unique_path(desk / "Print_DocFAST.png")
         self.pix.save(str(p), "PNG")
         return p
 
     def _save_file(self, ext: str):
         filters = {".png": "PNG (*.png)", ".jpg": "JPEG (*.jpg)", ".pdf": "PDF (*.pdf)"}
-        dest, _ = QFileDialog.getSaveFileName(None, "Salvar Print", f"Print{ext}", filters.get(ext, "Todos (*.*)"))
+        desk = desktop_dir()
+        default_file = str(unique_path(desk / f"Print{ext}"))
+        dest, _ = QFileDialog.getSaveFileName(None, "Salvar Print", default_file, filters.get(ext, "Todos (*.*)"))
         if not dest:
             return
-            
+
         self.close()
         p = Path(dest)
         if ext == ".pdf":
-            tmp_png = self._temp_png_path()
-            im = Image.open(tmp_png).convert("RGB")
+            im = Image.fromqpixmap(self.pix).convert("RGB")
             im.save(p, "PDF", resolution=150.0)
         else:
             self.pix.save(str(p))
-            
+
         if self.app:
-            self.app.toasts.info("Print Salvo com Sucesso", f"Salvo em: {p.name}")
+            self.app.toasts.info("Print Salvo na Área de Trabalho", f"Salvo em: {p.name}")
 
     def _copy_clipboard(self):
         QApplication.clipboard().setPixmap(self.pix)
@@ -212,27 +193,110 @@ class SnipActionDialog(QDialog):
             from . import tools
             self.app.open_window(tools.AnnotateWindow(str(tmp_png), self.app.notify))
 
+    def _ask_ai(self):
+        self.close()
+        if self.app:
+            self.app.open_ai_chat(initial_text="Analise esta captura de tela e me explique o que está acontecendo.", initial_image=self.pix)
+
+
+class ClipboardTextDialog(GlassWindow):
+    """Floating action dialog shown when text is pasted from clipboard."""
+
+    def __init__(self, text: str, app_ref=None):
+        super().__init__("Texto da Área de Transferência — DocFAST", size=(480, 280))
+        self.text = text
+        self.app = app_ref
+
+        layout = self.body
+        layout.setSpacing(10)
+
+        # Preview of copied text
+        preview = QTextEdit()
+        preview.setReadOnly(True)
+        preview.setPlainText(self.text)
+        preview.setStyleSheet("background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #e2e8f0; font-size: 9.5pt;")
+        layout.addWidget(preview, 1)
+
+        # Row 1: Direct Save to Desktop
+        row1 = QHBoxLayout()
+        btn_txt = QPushButton("Salvar TXT (Desktop)")
+        btn_txt.setObjectName("primary")
+        btn_txt.clicked.connect(lambda: self._save_text(".txt"))
+
+        btn_docx = QPushButton("Salvar DOCX (Desktop)")
+        btn_docx.clicked.connect(lambda: self._save_text(".docx"))
+
+        btn_pdf = QPushButton("Salvar PDF (Desktop)")
+        btn_pdf.clicked.connect(lambda: self._save_text(".pdf"))
+
+        row1.addWidget(btn_txt)
+        row1.addWidget(btn_docx)
+        row1.addWidget(btn_pdf)
+        layout.addLayout(row1)
+
+        # Row 2: AI Assistant
+        row2 = QHBoxLayout()
+        btn_ai = QPushButton("✨ Conversar sobre este texto com Ajuda AI")
+        btn_ai.setStyleSheet("background: qlineargradient(x1:0,y1:0,x2:1,y2:1, stop:0 #7b8cff, stop:1 #4f46e5); font-weight: 700;")
+        btn_ai.clicked.connect(self._ask_ai)
+        row2.addWidget(btn_ai)
+        layout.addLayout(row2)
+
+    def _save_text(self, ext: str):
+        desk = desktop_dir()
+        filters = {".txt": "Texto (*.txt)", ".docx": "Documento Word (*.docx)", ".pdf": "PDF (*.pdf)"}
+        default_file = str(unique_path(desk / f"Texto_Colado{ext}"))
+        dest, _ = QFileDialog.getSaveFileName(None, "Salvar Texto", default_file, filters.get(ext, "Todos (*.*)"))
+        if not dest:
+            return
+
+        self.close()
+        p = Path(dest)
+        if ext == ".txt":
+            p.write_text(self.text, encoding="utf-8")
+        elif ext == ".docx":
+            from docx import Document
+            doc = Document()
+            for line in self.text.splitlines():
+                doc.add_paragraph(line)
+            doc.save(p)
+        elif ext == ".pdf":
+            from . import convert
+            tmp_txt = desk / "temp_colado.txt"
+            tmp_txt.write_text(self.text, encoding="utf-8")
+            convert.text_to_pdf(tmp_txt)
+            gen_pdf = tmp_txt.with_suffix(".pdf")
+            if gen_pdf.exists():
+                if gen_pdf != p:
+                    if p.exists():
+                        p.unlink()
+                    gen_pdf.rename(p)
+            if tmp_txt.exists():
+                tmp_txt.unlink()
+
+        if self.app:
+            self.app.toasts.info("Salvo na Área de Trabalho", f"Salvo em: {p.name}")
+
+    def _ask_ai(self):
+        self.close()
+        if self.app:
+            self.app.open_ai_chat(initial_text=f"Dúvida sobre o seguinte texto:\n\n{self.text}")
+
 
 def handle_clipboard_paste(app):
-    """Check clipboard and open DocFAST menu directly on it."""
+    """Check clipboard and open appropriate DocFAST actions on Desktop."""
     cb = QApplication.clipboard()
     pix = cb.pixmap()
     if not pix.isNull():
-        d = Path(tempfile.gettempdir()) / "DocFAST"
-        d.mkdir(parents=True, exist_ok=True)
-        tmp = d / "clipboard_image.png"
-        pix.save(str(tmp), "PNG")
-        app.show_click_menu([str(tmp)])
+        dlg = SnipActionDialog(pix, app)
+        app.open_window(dlg)
         return True
-        
+
     text = cb.text()
     if text and text.strip():
-        d = Path(tempfile.gettempdir()) / "DocFAST"
-        d.mkdir(parents=True, exist_ok=True)
-        tmp = d / "clipboard_text.txt"
-        tmp.write_text(text, encoding="utf-8")
-        app.show_click_menu([str(tmp)])
+        dlg = ClipboardTextDialog(text.strip(), app)
+        app.open_window(dlg)
         return True
-        
+
     app.toasts.info("Área de Transferência Vazia", "Nenhuma imagem ou texto encontrado na Área de Transferência.")
     return False

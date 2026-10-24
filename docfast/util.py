@@ -7,7 +7,18 @@ from pathlib import Path
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".heic", ".heif", ".tif", ".tiff",
               ".avif", ".bmp", ".gif", ".ico"}
 PDF_EXTS = {".pdf"}
-SHEET_EXTS = {".xlsx", ".xls", ".csv"}
+SHEET_EXTS = {".xlsx", ".xls", ".csv", ".xlsm", ".xlsb", ".tsv"}
+ARCHIVE_EXTS = {".zip", ".rar", ".7z", ".tar", ".gz"}
+
+
+def desktop_dir() -> Path:
+    d = Path.home() / "Desktop"
+    if d.exists():
+        return d
+    onedrive_d = Path.home() / "OneDrive" / "Desktop"
+    if onedrive_d.exists():
+        return onedrive_d
+    return Path.home()
 DOCX_EXTS = {".docx"}
 TEXT_EXTS = {".txt", ".md", ".log", ".json", ".xml", ".html", ".htm"}
 

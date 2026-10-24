@@ -75,6 +75,14 @@ def summarize(action: str, srcs: list, outs: list, extra: str = "") -> Result:
     o0 = outs[0]
     good = ""
 
+    if "Zip" in name or "zip" in name.lower():
+        title = "Arquivo compactado (.zip)" if is_pt else "Compressed archive (.zip)"
+        return Result(title, f"{o0.name} · {human_size(after)}", outs, srcs, good="ZIP")
+
+    if name == "Extrair":
+        title = f"Extraídos {len(outs)} arquivos" if is_pt else f"Extracted {len(outs)} files"
+        return Result(title, f"{o0.parent.name}/ · {human_size(after)}", outs, srcs)
+
     if kind == "convert":
         fmt = name
         if fmt == "PDF (1 doc)":

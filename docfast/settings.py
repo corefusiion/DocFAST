@@ -1,15 +1,16 @@
 """Persistent settings + the Settings and Welcome windows."""
 from __future__ import annotations
 
-from .i18n import t, set_language, get_language
-
 import sys
+import threading
 
-from PySide6.QtCore import QSettings, Qt, Signal
-from PySide6.QtWidgets import (QCheckBox, QComboBox, QGridLayout, QHBoxLayout, QLabel,
-                               QPushButton, QSlider, QVBoxLayout)
+from PySide6.QtCore import QSettings, Qt, QUrl, Signal
+from PySide6.QtGui import QDesktopServices
+from PySide6.QtWidgets import (QCheckBox, QComboBox, QFrame, QGridLayout, QHBoxLayout,
+                                QLabel, QLineEdit, QPushButton, QSlider, QVBoxLayout)
 
-from . import __version__
+from . import __version__, ai_client
+from .i18n import get_language, set_language, t
 from .util import CONFIG
 from .window import GlassWindow
 
@@ -26,6 +27,10 @@ DEFAULTS = {
     "trigger": "shift",
     "language": "pt_BR",
     "theme": "aurora",
+    "ai_provider": "gemini",
+    "ai_model": "gemini-2.5-flash",
+    "ai_api_key": "",
+    "ai_base_url": "http://localhost:11434/v1",
     "welcomed": False,
 }
 
@@ -112,13 +117,16 @@ LANGS = [("pt_BR", "Português (Brasil)"), ("en", "English")]
 
 class SettingsWindow(GlassWindow):
     changed = Signal()
+    test_result_signal = Signal(bool, str)
 
     def __init__(self, settings: Settings):
-        super().__init__(t("settings_title"), size=(540, 520))
+        super().__init__(t("settings_title"), size=(560, 680))
         self.s = settings
+        self.test_result_signal.connect(self._on_test_result)
+
         grid = QGridLayout()
         grid.setHorizontalSpacing(14)
-        grid.setVerticalSpacing(12)
+        grid.setVerticalSpacing(10)
         r = 0
 
         def combo(options, current):
@@ -129,6 +137,7 @@ class SettingsWindow(GlassWindow):
             c.setCurrentIndex(idx)
             return c
 
+        # 1. Trigger
         grid.addWidget(QLabel(t("settings_trigger")), r, 0)
         self.trigger = combo(TRIGGERS, self.s.get("trigger"))
         self.trigger.currentIndexChanged.connect(lambda _: self._save("trigger", self.trigger.currentData()))
@@ -139,6 +148,7 @@ class SettingsWindow(GlassWindow):
         grid.addWidget(hint, r, 1)
         r += 1
 
+        # 2. Output
         outputs = [
             ("next", t("settings_save_next")),
             ("folder", t("settings_save_subfolder")),
@@ -149,7 +159,7 @@ class SettingsWindow(GlassWindow):
         grid.addWidget(self.output, r, 1)
         r += 1
 
-        # Theme selection (5 soft liquid-glass colors)
+        # 3. Theme
         themes = [
             ("aurora", t("theme_aurora")),
             ("dark", t("theme_dark")),
@@ -163,6 +173,7 @@ class SettingsWindow(GlassWindow):
         grid.addWidget(self.theme, r, 1)
         r += 1
 
+        # 4. Quality
         grid.addWidget(QLabel(t("settings_quality")), r, 0)
         row = QHBoxLayout()
         self.q = QSlider(Qt.Horizontal)
@@ -177,6 +188,7 @@ class SettingsWindow(GlassWindow):
         grid.addLayout(row, r, 1)
         r += 1
 
+        # 5. DPI
         dpis = [
             (150, t("settings_dpi_150")),
             (200, t("settings_dpi_200")),
@@ -188,12 +200,89 @@ class SettingsWindow(GlassWindow):
         grid.addWidget(self.dpi, r, 1)
         r += 1
 
+        # 6. Language
         grid.addWidget(QLabel(t("settings_lang")), r, 0)
         self.lang = combo(LANGS, self.s.get("language"))
         self.lang.currentIndexChanged.connect(lambda _: self._save("language", self.lang.currentData()))
         grid.addWidget(self.lang, r, 1)
         r += 1
 
+        # 7. AI Settings Section
+        sep = QFrame()
+        sep.setFrameShape(QFrame.HLine)
+        sep.setStyleSheet("color: rgba(255,255,255,0.15); margin: 6px 0;")
+        grid.addWidget(sep, r, 0, 1, 2)
+        r += 1
+
+        lbl_ai_title = QLabel("✨ Inteligência Artificial (Ajuda AI)")
+        lbl_ai_title.setStyleSheet("font-size: 11pt; font-weight: 700; color: #5ac8ff;")
+        grid.addWidget(lbl_ai_title, r, 0, 1, 2)
+        r += 1
+
+        # AI Provider
+        providers = [
+            ("gemini", "Google Gemini (Recomendado)"),
+            ("openai", "OpenAI (ChatGPT)"),
+            ("claude", "Anthropic Claude"),
+            ("opencode", "OpenCode / Ollama / Local LLM"),
+        ]
+        grid.addWidget(QLabel("Provedor LLM"), r, 0)
+        self.ai_prov = combo(providers, self.s.get("ai_provider"))
+        self.ai_prov.currentIndexChanged.connect(self._ai_provider_changed)
+        grid.addWidget(self.ai_prov, r, 1)
+        r += 1
+
+        # AI Model
+        grid.addWidget(QLabel("Modelo do Chat"), r, 0)
+        self.ai_model = QComboBox()
+        self._populate_models(self.s.get("ai_provider"), self.s.get("ai_model"))
+        self.ai_model.currentIndexChanged.connect(lambda _: self._save("ai_model", self.ai_model.currentText()))
+        grid.addWidget(self.ai_model, r, 1)
+        r += 1
+
+        # API Key + Link to get key
+        grid.addWidget(QLabel("Chave de API (API Key)"), r, 0)
+        key_layout = QHBoxLayout()
+        self.txt_key = QLineEdit()
+        self.txt_key.setEchoMode(QLineEdit.Password)
+        self.txt_key.setText(self.s.get("ai_api_key"))
+        self.txt_key.setPlaceholderText("Cole sua chave aqui...")
+        self.txt_key.textChanged.connect(lambda txt: self._save("ai_api_key", txt.strip()))
+
+        btn_show = QPushButton("👁️")
+        btn_show.setFixedSize(30, 26)
+        btn_show.setToolTip("Mostrar/Ocultar chave")
+        btn_show.clicked.connect(lambda: self.txt_key.setEchoMode(
+            QLineEdit.Normal if self.txt_key.echoMode() == QLineEdit.Password else QLineEdit.Password
+        ))
+
+        key_layout.addWidget(self.txt_key)
+        key_layout.addWidget(btn_show)
+        grid.addLayout(key_layout, r, 1)
+        r += 1
+
+        # Link to get key
+        self.btn_get_key = QPushButton("🔗 Obter Chave de API Gratuita...")
+        self.btn_get_key.setStyleSheet("color: #7b8cff; text-align: left; background: transparent; border: none; font-size: 8.5pt; text-decoration: underline;")
+        self.btn_get_key.setCursor(Qt.PointingHandCursor)
+        self.btn_get_key.clicked.connect(self._open_key_url)
+        grid.addWidget(self.btn_get_key, r, 1)
+        r += 1
+
+        # Test Connection button + status
+        test_layout = QHBoxLayout()
+        self.btn_test = QPushButton("⚡ Testar Conexão")
+        self.btn_test.setStyleSheet("background: qlineargradient(x1:0,y1:0,x2:1,y2:1, stop:0 #5ac8ff, stop:1 #2f7bff); font-weight: 700; padding: 4px 12px; border-radius: 8px;")
+        self.btn_test.clicked.connect(self._test_ai_connection)
+        self.lbl_test_status = QLabel("")
+        self.lbl_test_status.setStyleSheet("font-size: 8.5pt; font-weight: 600;")
+        test_layout.addWidget(self.btn_test)
+        test_layout.addWidget(self.lbl_test_status)
+        test_layout.addStretch(1)
+        grid.addLayout(test_layout, r, 1)
+        r += 1
+
+        # 8. Autostart
         if IS_WIN or IS_MAC or IS_LINUX:
             autostart_label = t("settings_autostart") if IS_WIN else t("settings_autostart_mac")
             self.auto = QCheckBox(autostart_label)
@@ -201,16 +290,10 @@ class SettingsWindow(GlassWindow):
             self.auto.toggled.connect(set_autostart)
             grid.addWidget(self.auto, r, 1)
             r += 1
-        if IS_MAC:
-            from . import platform_mac
-            if not platform_mac.has_screen_recording():
-                glass_btn = QPushButton("Enable full liquid glass…")
-                glass_btn.setToolTip("Lets the glass refract the windows behind it (Screen Recording permission)")
-                glass_btn.clicked.connect(platform_mac.request_screen_recording)
-                grid.addWidget(glass_btn, r, 1)
-                r += 1
+
         self.body.addLayout(grid)
         self.body.addStretch(1)
+
         about = QLabel(t("settings_author_credit", version=__version__))
         about.setObjectName("dim")
         foot = QHBoxLayout()
@@ -226,6 +309,58 @@ class SettingsWindow(GlassWindow):
         val = self.theme.currentData()
         self._save("theme", val)
         self.update()
+
+    def _ai_provider_changed(self, _):
+        prov = self.ai_prov.currentData()
+        self._save("ai_provider", prov)
+        info = ai_client.PROVIDERS.get(prov, {})
+        default_model = info.get("default_model", "")
+        self._populate_models(prov, default_model)
+        self._save("ai_model", self.ai_model.currentText())
+        self.lbl_test_status.setText("")
+
+    def _populate_models(self, prov: str, select_model: str):
+        self.ai_model.blockSignals(True)
+        self.ai_model.clear()
+        info = ai_client.PROVIDERS.get(prov, ai_client.PROVIDERS["gemini"])
+        models = info.get("models", [])
+        for m in models:
+            self.ai_model.addItem(m)
+        idx = models.index(select_model) if select_model in models else 0
+        self.ai_model.setCurrentIndex(max(0, idx))
+        self.ai_model.blockSignals(False)
+
+    def _open_key_url(self):
+        prov = self.ai_prov.currentData()
+        info = ai_client.PROVIDERS.get(prov, ai_client.PROVIDERS["gemini"])
+        url = info.get("url_key", "https://aistudio.google.com/apikey")
+        QDesktopServices.openUrl(QUrl(url))
+
+    def _test_ai_connection(self):
+        prov = self.ai_prov.currentData()
+        key = self.txt_key.text().strip()
+        model = self.ai_model.currentText()
+        base_url = self.s.get("ai_base_url")
+
+        self.btn_test.setEnabled(False)
+        self.lbl_test_status.setText("Testando conexão...")
+        self.lbl_test_status.setStyleSheet("color: #ffd36b; font-size: 8.5pt;")
+
+        def worker():
+            ok, msg = ai_client.test_connection(prov, key, model, base_url)
+            self.test_result_signal.emit(ok, msg)
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _on_test_result(self, ok: bool, msg: str):
+        self.btn_test.setEnabled(True)
+        if ok:
+            self.lbl_test_status.setText("✓ Conectado com sucesso!")
+            self.lbl_test_status.setStyleSheet("color: #8dffb8; font-size: 8.5pt; font-weight: 700;")
+        else:
+            self.lbl_test_status.setText(f"✗ {msg[:40]}...")
+            self.lbl_test_status.setToolTip(msg)
+            self.lbl_test_status.setStyleSheet("color: #ff6b9d; font-size: 8.5pt; font-weight: 700;")
 
     def _save(self, key, value):
         self.s.set(key, value)
@@ -262,25 +397,7 @@ class WelcomeWindow(GlassWindow):
             row.addLayout(col, 1)
             self.body.addLayout(row)
         self.body.addStretch(1)
-        if IS_MAC:
-            from . import platform_mac
-            if not platform_mac.has_screen_recording():
-                note = QLabel("Optional: allow Screen Recording so the glass can refract the windows "
-                              "behind it (otherwise it shows your wallpaper). DocFAST never saves or sends it.")
-                note.setObjectName("dim")
-                note.setWordWrap(True)
-                self.body.addWidget(note)
-                b = QPushButton("Allow Screen Recording…")
-                b.clicked.connect(platform_mac.request_screen_recording)
-                self.body.addWidget(b, 0, Qt.AlignLeft)
-        if IS_LINUX:
-            from . import platform_linux
-            if platform_linux.is_wayland():
-                note = QLabel("You're on a Wayland session: the Shift-while-dragging trigger needs X11 (e.g. XFCE). "
-                              "Right-click a file → Open With → DocFAST still works.")
-                note.setObjectName("warn")
-                note.setWordWrap(True)
-                self.body.addWidget(note)
+
         foot = QHBoxLayout()
         if IS_WIN or IS_MAC or IS_LINUX:
             autostart_label = t("settings_autostart") if IS_WIN else t("settings_autostart_mac")

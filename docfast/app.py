@@ -33,7 +33,8 @@ IPC_NAME = ipc_name()
 
 GLYPHS = {"Compress": "⇲", "Metadata": "ⓘ", "Redact": "▮", "Crop": "⌗", "Edit": "☼",
           "Annotate": "✎", "Add BG": "▣", "Resize": "⤢", "Split": "✂", "Rotate": "⟳",
-          "Merge": "⧉", "Protect": "⚿", "Extract": "⧈", "Sign": "✍", "Organize": "☷"}
+          "Merge": "⧉", "Protect": "⚿", "Extract": "⧈", "Sign": "✍", "Organize": "☷",
+          "Zip": "🗜", "Zip (Max)": "📦", "Extrair": "📂", "AiChat": "✨"}
 
 HINTS = {
     "Compress": "Reduzir tamanho do arquivo", "Metadata": "Ver · remover GPS", "Redact": "Ocultar informações privadas",
@@ -42,6 +43,8 @@ HINTS = {
     "Rotate": "Girar páginas 90°", "Merge": "Juntar em um só PDF", "Protect": "Adicionar senha",
     "Extract": "Extrair fotos embutidas", "Sign": "Assinar ou carimbar visualmente",
     "Organize": "Reordenar, girar ou excluir páginas",
+    "Zip": "Compactar em .zip", "Zip (Max)": "Compressão máxima", "Extrair": "Descompactar arquivos",
+    "AiChat": "Analisar com Inteligência Artificial",
 }
 FORMAT_HINTS = {"JPG": "Small, universal", "PNG": "Lossless · transparency", "WEBP": "Smallest for web",
                 "HEIC": "iPhone format", "TIFF": "Print · archival", "AVIF": "Next-gen, tiny",
@@ -174,6 +177,9 @@ class DocFASTApp(QObject):
         m.addAction(t("tray_snip"), self.start_snipping)
         m.addAction(t("tray_clipboard"), self.paste_clipboard)
         m.addSeparator()
+        m.addAction("✨ Ajuda AI (Texto selecionado)", lambda: self.ask_ai_on_selection(plus=False))
+        m.addAction("📸 Ajuda AI Plus (Texto + Print da Tela)", lambda: self.ask_ai_on_selection(plus=True))
+        m.addSeparator()
         m.addAction(t("tray_settings"), self.open_settings)
         m.addAction(t("tray_help"), self.show_welcome)
         m.addAction(t("tray_tip"), lambda: QDesktopServices.openUrl(QUrl(TIP_URL)))
@@ -207,6 +213,46 @@ class DocFASTApp(QObject):
 
     def paste_clipboard(self):
         snipper.handle_clipboard_paste(self)
+
+    def ask_ai_on_selection(self, plus: bool = False):
+        """Simulate copy on active window to grab selection, then open AI chat."""
+        if hasattr(self, "tray_menu"):
+            self.tray_menu.hide()
+
+        cb = QApplication.clipboard()
+        prev_text = cb.text()
+
+        if IS_WIN:
+            try:
+                import ctypes
+                user32 = ctypes.windll.user32
+                user32.keybd_event(0x11, 0, 0, 0)
+                user32.keybd_event(0x43, 0, 0, 0)
+                user32.keybd_event(0x43, 0, 2, 0)
+                user32.keybd_event(0x11, 0, 2, 0)
+            except Exception:
+                pass
+
+        def proceed():
+            new_text = cb.text()
+            selected = new_text if (new_text and new_text != prev_text) else ""
+            if not selected and prev_text:
+                selected = prev_text
+
+            pix = None
+            if plus:
+                scr = QGuiApplication.primaryScreen()
+                if scr:
+                    pix = scr.grabWindow(0)
+
+            self.open_ai_chat(initial_text=selected, initial_image=pix)
+
+        QTimer.singleShot(150, proceed)
+
+    def open_ai_chat(self, initial_text: str = "", initial_image: QPixmap | None = None):
+        from . import ai_chat
+        w = ai_chat.AiChatWindow(self.settings, initial_text=initial_text, initial_image=initial_image)
+        self.open_window(w)
 
     def trigger_label(self) -> str:
         return dict(TRIGGERS).get(self.settings.get("trigger"), "Shift")
@@ -267,10 +313,21 @@ class DocFASTApp(QObject):
 
     def build_rings(self, paths: list[str]) -> dict[str, list[Item]]:
         cat = category(paths[0])
-        if cat is None:
-            return {"Unsupported": []}
-        ext = Path(paths[0]).suffix
         same = [p for p in paths if category(p) == cat]
+        if cat is None or cat in ("generic", "directory", "archive"):
+            is_zip = any(str(p).lower().endswith(".zip") for p in paths)
+            conv_items = [
+                Item("Zip", key="convert:Zip", hint="Compactar em arquivo .zip padrão"),
+                Item("Zip (Max)", key="convert:Zip (Max)", hint="Compressão máxima em arquivo .zip"),
+            ]
+            if is_zip:
+                conv_items.append(Item("Extrair", key="convert:Extrair", hint="Descompactar arquivos do .zip"))
+            tool_items = [
+                Item("Ajuda AI", "✨", key="tool:AiChat", hint="Analisar arquivo ou dúvida com IA")
+            ]
+            return {"Convert": conv_items, "Tools": tool_items}
+
+        ext = Path(paths[0]).suffix
         convert_items = []
         for t in convert.targets_for(cat, ext, num_files=len(same)):
             hint = FORMAT_HINTS.get(t, "")
@@ -287,10 +344,20 @@ class DocFASTApp(QObject):
             convert_items.append(Item(t, key=f"convert:{t}", hint=hint))
         rings: dict[str, list[Item]] = {"Convert": convert_items}
         if cat == "image":
-            rings["Tools"] = [Item(n, GLYPHS[n], key=f"tool:{n}", hint=HINTS[n]) for n in IMAGE_TOOLS]
+            rings["Tools"] = [Item(n, GLYPHS[n], key=f"tool:{n}", hint=HINTS[n]) for n in IMAGE_TOOLS] + [
+                Item("Ajuda AI", "✨", key="tool:AiChat", hint="Analisar imagem com IA")
+            ]
         elif cat == "pdf":
             names = PDF_TOOLS[:3] + (["Merge"] if len(same) > 1 else []) + PDF_TOOLS[3:]
-            rings["Tools"] = [Item(n, GLYPHS[n], key=f"tool:{n}", hint=HINTS[n]) for n in names]
+            rings["Tools"] = [Item(n, GLYPHS[n], key=f"tool:{n}", hint=HINTS[n]) for n in names] + [
+                Item("Ajuda AI", "✨", key="tool:AiChat", hint="Analisar PDF com IA")
+            ]
+        elif cat in ("sheet", "docx", "text"):
+            rings["Tools"] = [
+                Item("Zip", "🗜", key="convert:Zip", hint="Compactar em .zip"),
+                Item("Zip (Max)", "📦", key="convert:Zip (Max)", hint="Compressão máxima"),
+                Item("Ajuda AI", "✨", key="tool:AiChat", hint="Analisar com IA"),
+            ]
         return rings
 
     # ------------------------------------------------------------ actions
@@ -299,6 +366,15 @@ class DocFASTApp(QObject):
         paths = [p for p in paths if category(p) == cat]
         kind, name = item.key.split(":", 1)
         if kind == "convert":
+            if name in ("Zip", "Zip (Max)"):
+                level = 9 if "Max" in name else 6
+                self.submit(f"convert:{name}", paths, lambda: convert.zip_files(paths, compress_level=level),
+                            f"Compactando {len(paths)} item(ns) em .zip…")
+                return
+            if name == "Extrair":
+                self.submit("convert:Extrair", paths, lambda: convert.extract_archive(paths[0]),
+                            "Extraindo arquivos do zip…")
+                return
             if cat == "image":
                 if name == "PDF (1 doc)":
                     self.submit("convert:PDF (1 doc)", paths, lambda: convert.images_to_single_pdf(paths),
@@ -343,6 +419,22 @@ class DocFASTApp(QObject):
                             {"Compress": "Compressing…", "Split": "Splitting…", "Rotate": "Rotating…",
                              "Extract": "Extracting images…"}[name])
             return
+        if name == "AiChat":
+            p0 = Path(paths[0])
+            txt_preview = ""
+            pix_preview = None
+            if p0.is_file() and p0.suffix.lower() in (".txt", ".md", ".json", ".xml", ".csv", ".py", ".log", ".html"):
+                try:
+                    txt_preview = p0.read_text(encoding="utf-8", errors="ignore")[:2500]
+                except Exception:
+                    pass
+            elif p0.is_file() and p0.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp", ".bmp"):
+                pix_preview = QPixmap(str(p0))
+
+            init_text = f"Análise do arquivo '{p0.name}':\n\n{txt_preview}" if txt_preview else f"Análise e dúvidas sobre o arquivo '{p0.name}'."
+            self.open_ai_chat(initial_text=init_text, initial_image=pix_preview)
+            return
+
         windows = {"Crop": tools.CropWindow, "Add BG": tools.AddBgWindow, "Annotate": tools.AnnotateWindow,
                    "Redact": tools.RedactWindow, "Edit": tools.EditWindow, "Metadata": tools.MetadataWindow}
         try:

@@ -173,3 +173,55 @@ def test_snipper_actions(tmp_path):
     tmp_png = dlg._temp_png_path()
     assert tmp_png.exists() and tmp_png.stat().st_size > 0
     dlg.close()
+
+
+def test_zip_and_extract(tmp_path):
+    f1 = tmp_path / "arquivo1.txt"
+    f1.write_text("Conteudo do arquivo 1", encoding="utf-8")
+    f2 = tmp_path / "planilha.csv"
+    f2.write_text("a,b,c\n1,2,3\n", encoding="utf-8")
+
+    # Zip normal via convert dispatch
+    res = convert.convert(f1, "generic", "Zip")
+    assert len(res) == 1
+    assert res[0].exists() and res[0].suffix == ".zip"
+
+    # Zip max
+    res_max = convert.convert(f1, "generic", "Zip (Max)")
+    assert len(res_max) == 1
+    assert res_max[0].exists()
+
+    # Extract
+    extracted = convert.convert(res[0], "archive", "Extrair")
+    assert len(extracted) >= 1
+    assert any(p.name == "arquivo1.txt" for p in extracted)
+
+
+def test_desktop_dir_and_ai_client():
+    from docfast.util import desktop_dir
+    from docfast import ai_client
+
+    desk = desktop_dir()
+    assert desk.exists()
+    assert desk.is_dir()
+
+    # Verify AI Providers catalog
+    assert "gemini" in ai_client.PROVIDERS
+    assert "openai" in ai_client.PROVIDERS
+    assert "claude" in ai_client.PROVIDERS
+    assert "opencode" in ai_client.PROVIDERS
+
+    gemini_models = ai_client.PROVIDERS["gemini"]["models"]
+    assert "gemini-2.5-flash" in gemini_models
+    assert "gemini-2.5-pro" in gemini_models
+
+    # Test connection error handling with invalid key
+    success, msg = ai_client.test_connection("gemini", "fake-key", "gemini-2.5-flash")
+    assert success is False
+    assert len(msg) > 0
+
+    # Test history path from ai_chat
+    from docfast import ai_chat
+    hist_p = ai_chat.history_file_path()
+    assert hist_p.name == "ai_chat_history.json"
+

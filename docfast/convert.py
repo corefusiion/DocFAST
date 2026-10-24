@@ -603,12 +603,16 @@ def targets_for(cat: str, src_ext: str, num_files: int = 1) -> list[str]:
             return out
         return t
     if cat == "sheet":
-        if src_ext in ("xlsx", "xls", "xlsm"):
+        if src_ext in ("xlsx", "xls", "xlsm", "xlsb"):
             return ["PDF", "CSV", "JSON", "HTML"]
         if src_ext == "csv":
             return ["XLSX", "PDF", "JSON", "HTML"]
         return ["PDF", "CSV", "JSON"]
-    return {"pdf": PDF_TARGETS, "docx": DOCX_TARGETS, "text": TEXT_TARGETS}.get(cat, [])
+    if cat == "archive":
+        return ["Extrair", "Zip", "Zip (Max)"]
+    if cat in ("generic", "directory"):
+        return ["Zip", "Zip (Max)"]
+    return {"pdf": PDF_TARGETS, "docx": DOCX_TARGETS, "text": TEXT_TARGETS}.get(cat, ["Zip", "Zip (Max)"])
 
 
 def convert(src: str | Path, cat: str, target: str) -> list[Path]:
@@ -630,5 +634,42 @@ def convert(src: str | Path, cat: str, target: str) -> list[Path]:
         return docx_to_pdf(src) if target == "PDF" else docx_to_txt(src)
     if cat == "text":
         return text_to_pdf(src) if target == "PDF" else text_to_docx(src)
+    if target in ("EXTRAIR", "EXTRACT"):
+        return extract_archive(src)
+    if "ZIP" in target:
+        level = 9 if "MAX" in target else 6
+        return zip_files([src], compress_level=level)
     raise ValueError(f"Can't convert {cat} to {target}")
+
+
+def zip_files(paths: list[str | Path], compress_level: int = 6) -> list[Path]:
+    import zipfile
+    from .util import unique_path
+    paths = [Path(p) for p in paths]
+    p0 = paths[0]
+    out_name = f"{p0.stem}.zip" if len(paths) == 1 else "Arquivos.zip"
+    out_zip = unique_path(p0.parent / out_name)
+    with zipfile.ZipFile(out_zip, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=compress_level) as zf:
+        for p in paths:
+            if p.is_dir():
+                for root, _, files in os.walk(p):
+                    for file in files:
+                        full_path = Path(root) / file
+                        rel_path = full_path.relative_to(p.parent)
+                        zf.write(full_path, arcname=str(rel_path))
+            elif p.is_file():
+                zf.write(p, arcname=p.name)
+    return [out_zip]
+
+
+def extract_archive(src: str | Path) -> list[Path]:
+    import zipfile
+    from .util import unique_path
+    z = Path(src)
+    out_dir = unique_path(z.parent / z.stem)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(z, "r") as zf:
+        zf.extractall(out_dir)
+        names = zf.namelist()
+    return [out_dir / n for n in names[:5]] or [out_dir]
 

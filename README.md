@@ -64,15 +64,26 @@ O arquivo convertido ou editado é salvo instantaneamente ao lado do original, s
 * **Rotação Individual**: Gire páginas digitalizadas de cabeça para baixo em 90°, 180° ou 270°.
 * **Exclusão Rápida**: Remova páginas em branco ou desnecessárias com uma tecla.
 
-### 5. 📋 Captura de Tela (PrintScreen Snipper) & Clipboard
-* **Captura de Tela com Seleção**: Selecione qualquer região da tela pelo menu da bandeja e converta na hora para **PNG, JPG, PDF** ou abra no editor de **Anotações**.
-* **Integração com a Área de Transferência**: Pressione `Ctrl + C` em qualquer imagem ou texto e acione o DocFAST para converter sem precisar abrir o Paint.
+### 5. 🤖 Ajuda AI & Ajuda AI Plus (Assistente Inteligente Windows)
+* **Onipresente no Windows**: Selecione textos ou dados em qualquer planilha do Excel, documento do Word, site web, terminal ou ERP, e acione **Ajuda AI** para abrir um chat translúcido inteligente.
+* **Ajuda AI Plus (Visão Computacional)**: Captura instantaneamente a tela sob o cursor e envia junto ao modelo de IA para analisar erros, planilhas complexas, interfaces e códigos visuais.
+* **Múltiplos Provedores Modernos**: Suporte nativo a **Google Gemini** (Gemini 2.5 Flash, 2.5 Pro), **OpenAI** (GPT-4o, GPT-4o-mini, o3-mini), **Anthropic Claude** (Claude 3.7 Sonnet) e **Modelos Locais** (Ollama / OpenCode).
+* **Fixação na Tela (📌)** e **Histórico Persistente**: Mantenha o chat fixo ao lado da sua janela de trabalho e retome conversas anteriores sem perder o contexto.
+* **Testador de API em Tempo Real**: Valide sua chave de API e modelo diretamente nas Configurações com o botão *⚡ Testar Conexão*.
 
-### 6. 🎨 Interface Liquid-Glass com Tecnologia Acrílica
+### 6. 📋 Captura de Tela (PrintScreen Snipper) & Salvamento no Desktop
+* **Captura de Tela com Seleção**: Selecione qualquer região da tela pelo menu da bandeja e converta na hora para **PNG, JPG, PDF**, envie para **Anotações** ou analise com **Ajuda AI**.
+* **Colar da Área de Transferência Direto no Desktop**: Pressione `Ctrl + C` em qualquer texto ou imagem e salve direto na sua **Área de Trabalho (Desktop)** como **TXT, DOCX, PDF** ou inicie uma conversa com IA.
+
+### 7. 📦 Compactação e Extração ZIP para Qualquer Arquivo ou Pasta
+* Selecione pastas, planilhas com macros (`.xlsm`, `.xlsb`), executáveis ou arquivos genéricos e acione **Zip (Normal)** ou **Zip (Max)** com compressão de alta densidade.
+* Extraia arquivos `.zip` em milissegundos sem abrir descompactadores pesados.
+
+### 8. 🎨 Interface Liquid-Glass com 5 Novos Temas Suaves com Tecnologia Acrílica
 * Renderização translúcida real que desfoca e refrata a área de trabalho em tempo real, com borda iridescente (arco-íris).
 * Notificações flutuantes em formato de cartões de vidro com botões rápidos: **Abrir**, **Mostrar na Pasta** e **Desfazer** (envia o arquivo criado para a Lixeira).
 
-### 7. 🇧🇷 Interface 100% em Português (com seletor PT-BR / EN)
+### 9. 🇧🇷 Interface 100% em Português (com seletor PT-BR / EN)
 * Menus, janelas e dicas totalmente localizados para Português do Brasil, com opção de alternar dinamicamente para Inglês nas Configurações.
 
 ---
@@ -96,10 +107,11 @@ O arquivo convertido ou editado é salvo instantaneamente ao lado do original, s
 |---|---|---|
 | **Imagens** <br>*(JPG, PNG, WEBP, HEIC, AVIF, TIFF, BMP, GIF, ICO)* | Qualquer formato de imagem ou **PDF** (juntar em 1 PDF ou PDFs separados) | **Compactar** (por qualidade ou tamanho alvo ex: "< 500 KB") • **Redimensionar** • **Recortar** • **Anotar** (setas, caixas, texto, marcador) • **Tarjar** (censura permanente) • **Adicionar Fundo** (gradiente) • **Editar** (cor, luz, contraste, P&B) • **Metadados** (limpeza de GPS e EXIF) |
 | **Documentos PDF** | **JPG / PNG** (uma imagem por página), **DOCX** (Word editável), **TXT** | **✍️ Assinar / Carimbar** • **📑 Organizar Páginas** (reordenar, girar, excluir) • **Juntar PDFs** • **Dividir PDF** • **Compactar** • **Proteger com Senha (AES-256)** • **Extrair Imagens** |
-| **Planilhas** <br>*(XLSX, XLS, CSV)* | **PDF**, **CSV**, **JSON**, **HTML**, **XLSX** | Visualização rápida de dados e conversão tabular em lote |
+| **Planilhas** <br>*(XLSX, XLS, XLSM, XLSB, CSV)* | **PDF**, **CSV**, **JSON**, **HTML**, **XLSX** | Visualização rápida de dados e conversão tabular em lote |
 | **Documentos Word** <br>*(DOCX)* | **PDF** (renderização nativa de alta fidelidade), **TXT** | Conversão veloz de relatórios e contratos |
 | **Textos & Markdown** <br>*(TXT, MD)* | **PDF**, **DOCX** | Formatação limpa para leitura e compartilhamento |
-| **Captura / Clipboard** | **PNG**, **JPG**, **PDF**, **Anotação** | Captura de tela livre com atalhos na bandeja |
+| **Captura / Clipboard** | **PNG**, **JPG**, **PDF**, **TXT**, **DOCX**, **Desktop** | Salva na Área de Trabalho ou analisa com Ajuda AI |
+| **Pastas & Arquivos Genéricos** | **Zip (Normal)**, **Zip (Max)**, **Extrair** | Compactação rápida e extração direta |
 
 ---
 
