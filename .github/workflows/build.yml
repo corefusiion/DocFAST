@@ -314,6 +314,7 @@ jobs:
           tag_name: latest
           name: DocFAST (latest build)
           make_latest: true
+          overwrite: true
           body: |
             **Windows**
             - **DocFAST-Setup.exe** — recommended. Per-user install (no admin), Start menu, start with Windows, right-click "DocFAST…" and Send To.
@@ -333,7 +334,8 @@ jobs:
             - **DocFAST-linux-amd64.deb** — install with `sudo apt install ./DocFAST-linux-amd64.deb`, then open DocFAST from the app menu. Works with or without a compositor.
 
             **Desenvolvido por:** Gleisson Santos
-            **Site Oficial & Doações:** [https://docfastbr.lovable.app/](https://docfastbr.lovable.app/)
+            **Site Oficial:** [https://docfastbr.lovable.app/](https://docfastbr.lovable.app/)
+            **Apoiar no Ko-fi:** [https://ko-fi.com/corefusion](https://ko-fi.com/corefusion)
 
             Gostou do DocFAST? Apoie o projeto e o desenvolvedor em [docfastbr.lovable.app](https://docfastbr.lovable.app/) ♥
             Built automatically from commit ${{ github.sha }}.
@@ -343,4 +345,5 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
+          overwrite: true
           files: out/*

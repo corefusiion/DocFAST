@@ -356,3 +356,15 @@ def test_docfast_app_instantiation():
     assert hasattr(app, "open_lan_broadcast_dialog")
     assert hasattr(app, "show_system_health")
     assert hasattr(app, "start_gif_recording")
+
+    # Clean teardown for CI runner stability
+    if hasattr(app, "watcher") and hasattr(app.watcher, "timer"):
+        app.watcher.timer.stop()
+    if hasattr(app, "_sched_timer"):
+        app._sched_timer.stop()
+    if hasattr(app, "_health_timer"):
+        app._health_timer.stop()
+    if hasattr(app, "lan_listener"):
+        app.lan_listener.stop_listening()
+    if hasattr(app, "server"):
+        app.server.close()

@@ -90,11 +90,18 @@ def broadcast_message(title: str, message: str, icon: str = "🛡️") -> bool:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         # Broadcast to LAN
-        sock.sendto(raw, ("<broadcast>", LAN_PORT))
+        try:
+            sock.sendto(raw, ("<broadcast>", LAN_PORT))
+            sent = True
+        except Exception:
+            pass
         # Also send to localhost so sender tests/sees it
-        sock.sendto(raw, ("127.0.0.1", LAN_PORT))
+        try:
+            sock.sendto(raw, ("127.0.0.1", LAN_PORT))
+            sent = True
+        except Exception:
+            pass
         sock.close()
-        sent = True
     except Exception:
         pass
     return sent
@@ -118,6 +125,11 @@ class LanBroadcastListener(QTimer):
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            if hasattr(socket, "SO_REUSEPORT"):
+                try:
+                    self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+                except Exception:
+                    pass
             self.sock.bind(("", LAN_PORT))
             self.sock.settimeout(1.5)
 

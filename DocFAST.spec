@@ -10,7 +10,11 @@ a = Analysis(
     ["run.py"],
     datas=[("docfast/assets", "docfast/assets")] + heif_datas,
     binaries=heif_bins,
-    hiddenimports=["win32com.client", "PySide6.QtNetwork", "AppKit", "Quartz", "objc"] + heif_hidden,
+    hiddenimports=[
+        "docfast.ai_chat", "docfast.ai_client", "docfast.clipboard_history",
+        "docfast.lan_broadcast", "docfast.sticky", "docfast.system_card",
+        "win32com.client", "PySide6.QtNetwork", "AppKit", "Quartz", "objc"
+    ] + heif_hidden,
     excludes=["tkinter", "PySide6.QtWebEngineCore", "PySide6.QtWebEngineWidgets", "PySide6.QtQml",
               "PySide6.QtQuick", "PySide6.Qt3DCore", "PySide6.QtMultimedia", "PySide6.QtCharts",
               "PySide6.QtDataVisualization", "PySide6.QtPdf", "pandas", "yaml", "PySide6.QtSql", "PySide6.QtTest",
