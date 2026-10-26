@@ -28,6 +28,7 @@ IMAGE_TARGETS = ["PNG", "JPG", "WEBP", "HEIC", "TIFF", "AVIF", "BMP", "PDF", "IC
 PDF_TARGETS = ["JPG", "PNG", "DOCX", "TXT"]
 DOCX_TARGETS = ["PDF", "TXT"]
 TEXT_TARGETS = ["PDF", "DOCX"]
+DATA_TARGETS = ["XLSX", "CSV", "JSON", "YAML", "XML", "MD Table"]
 
 PIL_FORMAT = {"PNG": "PNG", "JPG": "JPEG", "WEBP": "WEBP", "HEIC": "HEIF", "TIFF": "TIFF",
               "AVIF": "AVIF", "BMP": "BMP", "PDF": "PDF", "ICO": "ICO", "GIF": "GIF"}
@@ -634,6 +635,11 @@ def targets_for(cat: str, src_ext: str, num_files: int = 1) -> list[str]:
         if src_ext == "csv":
             return ["XLSX", "PDF", "JSON", "HTML"]
         return ["PDF", "CSV", "JSON"]
+    if cat == "data":
+        cur_fmt = src_ext.upper()
+        if cur_fmt in ("YML", "YAML"):
+            cur_fmt = "YAML"
+        return [t for t in DATA_TARGETS if t.upper() != cur_fmt]
     if cat == "docx":
         return ["PDF", "TXT", "Extrair Midias"]
     if cat == "archive":
@@ -643,7 +649,8 @@ def targets_for(cat: str, src_ext: str, num_files: int = 1) -> list[str]:
     return {"pdf": PDF_TARGETS, "docx": ["PDF", "TXT", "Extrair Midias"], "text": TEXT_TARGETS}.get(cat, ["Zip", "Zip (Max)"])
 
 
-def convert(src: str | Path, cat: str, target: str) -> list[Path]:
+
+def _raw_convert(src: str | Path, cat: str, target: str) -> list[Path]:
     target = target.upper()
     if cat == "image":
         if target in ("PDF (SEP)", "PDF"):
@@ -660,6 +667,9 @@ def convert(src: str | Path, cat: str, target: str) -> list[Path]:
             return pdf_to_docx(src)
     if cat == "docx":
         return docx_to_pdf(src) if target == "PDF" else docx_to_txt(src)
+    if cat == "data":
+        from .data_convert import convert_data
+        return convert_data(src, target)
     if cat == "text":
         return text_to_pdf(src) if target == "PDF" else text_to_docx(src)
     if "EXTRAIR" in target and ("MIDIA" in target or "MÍDIA" in target):
@@ -703,3 +713,28 @@ def extract_archive(src: str | Path) -> list[Path]:
         names = zf.namelist()
     return [out_dir / n for n in names[:5]] or [out_dir]
 
+
+
+def convert(src: str | Path, cat: str, target: str) -> list[Path]:
+    outs = _raw_convert(src, cat, target)
+    # Record history
+    try:
+        from .history import record_conversion
+        record_conversion(src, outs, cat)
+    except Exception:
+        pass
+
+    # Safe recycle bin / only if smaller checks if configured
+    try:
+        from .settings import Settings
+        s = Settings()
+        if s.get("only_if_smaller") and outs:
+            from .safe_trash import verify_only_if_smaller
+            outs = verify_only_if_smaller(src, outs)
+        if s.get("replace_original") and outs:
+            from .safe_trash import move_to_trash
+            move_to_trash(src)
+    except Exception:
+        pass
+
+    return outs

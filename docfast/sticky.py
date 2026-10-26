@@ -211,13 +211,16 @@ class StickyNoteWindow(GlassWindow):
 
     @classmethod
     def restore_all(cls):
+        """Restore at most 1 note on application startup, avoiding multiple popups."""
+        if cls.active_instances:
+            return
         data = load_all_notes()
         if not data:
             return
-        for item in data:
-            if any(inst.note_id == item.get("id") for inst in cls.active_instances):
-                continue
-            pos = (item.get("x", 120), item.get("y", 120))
-            w = cls(note_id=item.get("id"), content=item.get("content", ""),
-                    tint=item.get("tint", "yellow"), pos=pos)
-            w.show()
+        # Open only the single most recent note
+        valid = [item for item in data if item.get("content", "").strip()]
+        target = valid[-1] if valid else data[-1]
+        pos = (target.get("x", 120), target.get("y", 120))
+        w = cls(note_id=target.get("id"), content=target.get("content", ""),
+                tint=target.get("tint", "yellow"), pos=pos)
+        w.show()

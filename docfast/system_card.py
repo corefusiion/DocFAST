@@ -61,25 +61,8 @@ def get_system_stats() -> dict:
     except Exception:
         pass
 
-    # 2. Windows specific stats (Recycle bin & RAM)
+    # 2. Hardware stats (RAM & CPU)
     if IS_WIN:
-        try:
-            class SHQUERYRBINFO(ctypes.Structure):
-                _fields_ = [
-                    ("cbSize", ctypes.c_ulong),
-                    ("i64Size", ctypes.c_int64),
-                    ("i64NumItems", ctypes.c_int64),
-                ]
-
-            info = SHQUERYRBINFO()
-            info.cbSize = ctypes.sizeof(SHQUERYRBINFO)
-            ret = ctypes.windll.shell32.SHQueryRecycleBinW("C:\\", ctypes.byref(info))
-            if ret == 0:
-                stats["recycle_items"] = int(info.i64NumItems)
-                stats["recycle_mb"] = round(info.i64Size / (1024**2), 1)
-        except Exception:
-            pass
-
         try:
             class MEMORYSTATUSEX(ctypes.Structure):
                 _fields_ = [
@@ -103,19 +86,10 @@ def get_system_stats() -> dict:
         except Exception:
             pass
 
+    import platform
+    stats["cpu_arch"] = platform.machine()
+    stats["cpu_count"] = os.cpu_count() or 4
     return stats
-
-
-def empty_recycle_bin() -> bool:
-    """Empties Windows Recycle Bin silently."""
-    if not IS_WIN:
-        return False
-    try:
-        # SHERB_NOCONFIRMATION (1) | SHERB_NOPROGRESSUI (2) | SHERB_NOSOUND (4) = 7
-        ret = ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, 7)
-        return ret == 0
-    except Exception:
-        return False
 
 
 # ---------------------------------------------------------------- Windows Context Menu
@@ -335,17 +309,19 @@ class SystemHealthCard(GlassWindow):
         rb_lay.addWidget(lbl_r_val)
         two_col.addWidget(ram_box, 1)
 
-        # Recycle Bin
-        rec_box = QFrame()
-        rec_box.setStyleSheet("background: rgba(255,255,255,0.06); border-radius: 10px; padding: 8px;")
-        rc_lay = QVBoxLayout(rec_box)
-        lbl_c_title = QLabel("🗑️ Lixeira")
+        # CPU & Architecture
+        cpu_box = QFrame()
+        cpu_box.setStyleSheet("background: rgba(255,255,255,0.06); border-radius: 10px; padding: 8px;")
+        cc_lay = QVBoxLayout(cpu_box)
+        lbl_c_title = QLabel("⚡ Processador & Sistema")
         lbl_c_title.setStyleSheet("font-weight: 600; font-size: 9.5pt; color: #ffffff;")
-        self.lbl_rec_val = QLabel(f"{stats['recycle_items']} itens\n({stats['recycle_mb']} MB)")
-        self.lbl_rec_val.setObjectName("dim")
-        rc_lay.addWidget(lbl_c_title)
-        rc_lay.addWidget(self.lbl_rec_val)
-        two_col.addWidget(rec_box, 1)
+        cores = stats.get("cpu_count", 4)
+        arch = stats.get("cpu_arch", "x64")
+        lbl_c_val = QLabel(f"{cores} Nucleos ({arch})")
+        lbl_c_val.setObjectName("dim")
+        cc_lay.addWidget(lbl_c_title)
+        cc_lay.addWidget(lbl_c_val)
+        two_col.addWidget(cpu_box, 1)
 
         self.body.addLayout(two_col)
 
@@ -367,11 +343,7 @@ class SystemHealthCard(GlassWindow):
 
         # Buttons footer
         foot = QHBoxLayout()
-        if IS_WIN and stats["recycle_items"] > 0:
-            btn_empty = QPushButton("Esvaziar Lixeira")
-            btn_empty.setStyleSheet("padding: 6px 14px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 8px; color: #fecaca;")
-            btn_empty.clicked.connect(self._do_empty_recycle)
-            foot.addWidget(btn_empty)
+
 
         foot.addStretch(1)
         btn_close = QPushButton("Fechar")
@@ -380,8 +352,4 @@ class SystemHealthCard(GlassWindow):
         foot.addWidget(btn_close)
         self.body.addLayout(foot)
 
-    def _do_empty_recycle(self):
-        if empty_recycle_bin():
-            self.lbl_rec_val.setText("0 itens\n(0.0 MB)")
-            self.sender().setEnabled(False)
-            self.sender().setText("Lixeira Esvaziada!")
+

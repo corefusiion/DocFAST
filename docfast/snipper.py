@@ -8,10 +8,10 @@ import io
 from pathlib import Path
 from PIL import Image
 
-from PySide6.QtCore import QPoint, QRect, Qt
+from PySide6.QtCore import QPoint, QRect, Qt, QTimer
 from PySide6.QtGui import (QBrush, QColor, QCursor, QFont, QGuiApplication,
-                            QPainter, QPen, QPixmap)
-from PySide6.QtWidgets import (QApplication, QDialog, QFileDialog, QHBoxLayout,
+                            QImage, QPainter, QPen, QPixmap)
+from PySide6.QtWidgets import (QApplication, QDialog, QFileDialog, QFrame, QHBoxLayout,
                                 QLabel, QPushButton, QTextEdit, QVBoxLayout, QWidget)
 
 from .util import desktop_dir, unique_path
@@ -366,18 +366,20 @@ class ScreenGifRecorder(QWidget):
     def paintEvent(self, event):
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
-        p.fillRect(self.rect(), QColor(0, 0, 0, 110))
+        if not self.is_recording:
+            p.fillRect(self.rect(), QColor(0, 0, 0, 110))
 
         if self.is_selecting or self.selected_rect:
             r = self.selected_rect or QRect(self.origin, self.current).normalized()
             if r.isValid() and r.width() > 1 and r.height() > 1:
-                p.setCompositionMode(QPainter.CompositionMode_Clear)
-                p.fillRect(r, Qt.transparent)
-                p.setCompositionMode(QPainter.CompositionMode_SourceOver)
+                if not self.is_recording:
+                    p.setCompositionMode(QPainter.CompositionMode_Clear)
+                    p.fillRect(r, Qt.transparent)
+                    p.setCompositionMode(QPainter.CompositionMode_SourceOver)
 
                 # Red border if recording, blue if selecting
                 border_color = QColor("#ef4444") if self.is_recording else QColor("#5ac8ff")
-                p.setPen(QPen(border_color, 2))
+                p.setPen(QPen(border_color, 3 if self.is_recording else 2))
                 p.drawRect(r)
 
     def mousePressEvent(self, event):
@@ -413,6 +415,7 @@ class ScreenGifRecorder(QWidget):
         if not self.is_recording:
             # Start
             self.is_recording = True
+            self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
             self.frames = []
             self.seconds_elapsed = 0
             self.btn_rec.setText("⏹ Concluir GIF (00:00 / 00:15)")
@@ -438,8 +441,12 @@ class ScreenGifRecorder(QWidget):
         if primary:
             pix = primary.grabWindow(0, self.selected_rect.x(), self.selected_rect.y(),
                                      self.selected_rect.width(), self.selected_rect.height())
-            im = Image.fromqpixmap(pix)
-            self.frames.append(im.convert("P", palette=Image.ADAPTIVE))
+            qimg = pix.toImage().convertToFormat(QImage.Format_RGBA8888)
+            width, height = qimg.width(), qimg.height()
+            if width > 0 and height > 0:
+                raw_bytes = qimg.constBits().tobytes()
+                im = Image.frombuffer("RGBA", (width, height), raw_bytes, "raw", "RGBA", 0, 1)
+                self.frames.append(im.convert("P", palette=Image.ADAPTIVE))
 
     def _finish_and_save(self):
         self.frame_timer.stop()

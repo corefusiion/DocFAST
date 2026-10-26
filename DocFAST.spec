@@ -12,7 +12,9 @@ a = Analysis(
     binaries=heif_bins,
     hiddenimports=[
         "docfast.ai_chat", "docfast.ai_client", "docfast.clipboard_history",
-        "docfast.lan_broadcast", "docfast.sticky", "docfast.system_card",
+        "docfast.data_convert", "docfast.history", "docfast.lan_broadcast",
+        "docfast.safe_trash", "docfast.sticky", "docfast.system_card",
+        "docfast.watch", "docfast.web_drag",
         "win32com.client", "PySide6.QtNetwork", "AppKit", "Quartz", "objc"
     ] + heif_hidden,
     excludes=["tkinter", "PySide6.QtWebEngineCore", "PySide6.QtWebEngineWidgets", "PySide6.QtQml",

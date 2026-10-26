@@ -20,7 +20,8 @@ def desktop_dir() -> Path:
         return onedrive_d
     return Path.home()
 DOCX_EXTS = {".docx"}
-TEXT_EXTS = {".txt", ".md", ".log", ".json", ".xml", ".html", ".htm"}
+DATA_EXTS = {".json", ".yaml", ".yml", ".xml", ".tsv"}
+TEXT_EXTS = {".txt", ".md", ".log", ".html", ".htm"}
 
 
 def category(path: str | Path) -> str | None:
@@ -31,6 +32,8 @@ def category(path: str | Path) -> str | None:
         return "pdf"
     if ext in SHEET_EXTS:
         return "sheet"
+    if ext in DATA_EXTS:
+        return "data"
     if ext in DOCX_EXTS:
         return "docx"
     if ext in TEXT_EXTS:

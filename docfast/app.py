@@ -193,6 +193,8 @@ class DocFASTApp(QObject):
         m.addAction("📡 Comunicados em Rede (DSS & Equipe)", self.open_lan_broadcast_dialog)
         m.addSeparator()
         m.addAction("📊 Status do Sistema & Disco", self.show_system_health)
+        m.addAction("📈 Conversões Recentes & Estatísticas", self.open_recent_conversions)
+        m.addAction("📂 Pastas Monitoradas (Watch Folders)", self.open_watch_folders)
         m.addSeparator()
         m.addAction(t("tray_settings"), self.open_settings)
         m.addAction(t("tray_help"), self.show_welcome)
@@ -226,6 +228,12 @@ class DocFASTApp(QObject):
         self._health_timer = QTimer(self)
         self._health_timer.timeout.connect(self._on_periodic_health)
         self._update_health_timer()
+
+        # Watch Folders Service
+        from .watch import WatchFolderManager
+        self.watch_mgr = WatchFolderManager(self)
+        self.watch_mgr.file_converted.connect(self._on_watch_converted)
+        self.watch_mgr.start()
 
     def start_snipping(self):
         if hasattr(self, "tray_menu"):
@@ -593,6 +601,25 @@ class DocFASTApp(QObject):
     def open_sticky_note(self):
         StickyNoteWindow.create_new()
 
+
+    def open_recent_conversions(self):
+        from .history import RecentConversionsWindow
+        if not hasattr(self, "_history_win") or self._history_win is None or self._history_win.isHidden():
+            self._history_win = RecentConversionsWindow()
+        self._history_win.show()
+        self._history_win.raise_()
+        self._history_win.activateWindow()
+
+    def open_watch_folders(self):
+        from .watch import WatchFoldersDialog
+        if not hasattr(self, "_watch_dlg") or self._watch_dlg is None or self._watch_dlg.isHidden():
+            self._watch_dlg = WatchFoldersDialog(self.watch_mgr)
+        self._watch_dlg.show()
+        self._watch_dlg.raise_()
+        self._watch_dlg.activateWindow()
+
+    def _on_watch_converted(self, src: str, outs: list):
+        self.toasts.created(outs, ["Auto"])
     def open_clipboard_history(self):
         if not hasattr(self, "_cb_win") or self._cb_win is None or self._cb_win.isHidden():
             self._cb_win = ClipboardHistoryWindow(on_copied=lambda msg: self.toasts.info("Área de Transferência", msg))

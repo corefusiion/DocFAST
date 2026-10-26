@@ -7,7 +7,7 @@ import threading
 from PySide6.QtCore import QSettings, Qt, QUrl, Signal
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import (QCheckBox, QComboBox, QFrame, QGridLayout, QHBoxLayout,
-                                QLabel, QLineEdit, QPushButton, QSlider, QVBoxLayout)
+                                QLabel, QLineEdit, QPushButton, QSlider, QTabWidget, QVBoxLayout, QWidget)
 
 from . import __version__, ai_client, system_card
 from .i18n import get_language, set_language, t
@@ -159,6 +159,19 @@ class SettingsWindow(GlassWindow):
         self.output = combo(outputs, self.s.get("output"))
         self.output.currentIndexChanged.connect(lambda _: self._save("output", self.output.currentData()))
         grid.addWidget(self.output, r, 1)
+        r += 1
+
+        # Safe Trash & Only If Smaller
+        self.chk_replace = QCheckBox("Substituir o arquivo original (movendo o original para a Lixeira)")
+        self.chk_replace.setChecked(bool(self.s.get("replace_original")))
+        self.chk_replace.toggled.connect(lambda on: self._save("replace_original", on))
+        grid.addWidget(self.chk_replace, r, 0, 1, 2)
+        r += 1
+
+        self.chk_smaller = QCheckBox("Compressão inteligente: salvar resultado apenas se o arquivo final for menor")
+        self.chk_smaller.setChecked(bool(self.s.get("only_if_smaller")))
+        self.chk_smaller.toggled.connect(lambda on: self._save("only_if_smaller", on))
+        grid.addWidget(self.chk_smaller, r, 0, 1, 2)
         r += 1
 
         # 3. Theme
@@ -393,82 +406,138 @@ class SettingsWindow(GlassWindow):
 
 class WelcomeWindow(GlassWindow):
     def __init__(self, settings: Settings, trigger_label: str = "Shift"):
-        super().__init__("Guia Completo de Uso · DocFAST PRO", size=(680, 660))
+        super().__init__("Guia Completo de Uso · DocFAST PRO", size=(740, 560))
         self.s = settings
 
-        subtitle = QLabel("Domine todas as funcionalidades e atalhos de alta produtividade do DocFAST:")
-        subtitle.setStyleSheet("color: #94a3b8; font-size: 10pt; margin-bottom: 6px;")
+        subtitle = QLabel("Domine os recursos de alta produtividade do DocFAST organizados por categorias:")
+        subtitle.setStyleSheet("color: #94a3b8; font-size: 10pt; margin-bottom: 4px;")
         self.body.addWidget(subtitle)
 
-        guide_items = [
-            ("🖱️", "Menu Radial Instantâneo (Arrastar + Tecla)",
-             f"Arraste qualquer arquivo ou pasta no Windows Explorer ou Desktop e aperte a tecla <b>{trigger_label}</b>. O menu de vidro surge sob o cursor. Solte o mouse sobre a ação desejada para executar em milissegundos."),
+        tabs = QTabWidget()
+        tabs.setStyleSheet("""
+            QTabWidget::pane {
+                border: 1px solid rgba(255,255,255,0.12);
+                border-radius: 10px;
+                background: rgba(15, 23, 42, 0.4);
+                padding: 10px;
+            }
+            QTabBar::tab {
+                background: rgba(255,255,255,0.06);
+                color: #94a3b8;
+                padding: 7px 14px;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
+                margin-right: 4px;
+                font-weight: 600;
+            }
+            QTabBar::tab:selected {
+                background: rgba(90, 200, 255, 0.2);
+                color: #5ac8ff;
+                border: 1px solid rgba(90, 200, 255, 0.4);
+            }
+        """)
 
+        def make_tab(items):
+            w = QWidget()
+            lay = QVBoxLayout(w)
+            lay.setContentsMargins(6, 6, 6, 6)
+            lay.setSpacing(8)
+            for icon_sym, title, desc in items:
+                card = QFrame()
+                card.setStyleSheet("background: rgba(255,255,255,0.05); border-radius: 8px; padding: 6px 10px;")
+                c_lay = QHBoxLayout(card)
+                c_lay.setContentsMargins(4, 4, 4, 4)
+                c_lay.setSpacing(10)
+
+                badge = QLabel(icon_sym)
+                badge.setAlignment(Qt.AlignCenter)
+                badge.setFixedSize(30, 30)
+                badge.setStyleSheet("background: rgba(90, 200, 255, 0.15); border-radius: 15px; font-size: 12pt;")
+                c_lay.addWidget(badge)
+
+                t_box = QVBoxLayout()
+                t_box.setSpacing(1)
+                lbl_t = QLabel(title)
+                lbl_t.setStyleSheet("font-size: 9.5pt; font-weight: 700; color: #ffffff;")
+                lbl_d = QLabel(desc)
+                lbl_d.setWordWrap(True)
+                lbl_d.setStyleSheet("color: #cbd5e1; font-size: 8.5pt; line-height: 1.25;")
+                t_box.addWidget(lbl_t)
+                t_box.addWidget(lbl_d)
+                c_lay.addLayout(t_box, 1)
+                lay.addWidget(card)
+            lay.addStretch(1)
+            return w
+
+        # Tab 1: Gestures and Shortcuts
+        t1 = [
+            ("🖱️", f"Menu Radial Instantâneo (Arrastar + Tecla {trigger_label})",
+             f"Arraste qualquer arquivo ou pasta e aperte <b>{trigger_label}</b>. O menu de vidro surge sob o cursor. Solte sobre a fatia para executar."),
             ("⇄", "Alternar entre Conversão e Ferramentas",
-             f"Enquanto o menu radial estiver aberto na tela, toque na tecla <b>{trigger_label}</b> uma segunda vez para alternar instantaneamente entre o anel de formatos de <i>Conversão</i> e o anel de <i>Ferramentas Visuais</i>."),
-
-            ("🧮", "Especialista em Excel & Planilhas (Atalho Ctrl + 3)",
-             "Pressione <b>Ctrl + 3</b> enquanto estiver usando o Excel ou visualizando uma tabela na tela. O DocFAST tira um print suave da planilha e abre o chat de IA especializado sugerindo fórmulas (PROCX, IFS, SOMASES, etc.), correções e análises na hora."),
-
-            ("📝", "Notas Rápidas Fixas de Vidro (Sticky Notes)",
-             "Crie pequenas notas translúcidas elegantes fixadas na tela (📌) com múltiplas cores suaves para rascunhos de reuniões e tarefas diárias."),
-
+             f"Com o menu radial aberto, toque na tecla <b>{trigger_label}</b> novamente para alternar entre formatos de conversão e ferramentas visuais."),
+            ("🧮", "Auditor de Planilhas & Fórmulas com IA (Ctrl + 3)",
+             "Pressione <b>Ctrl + 3</b> sobre qualquer tabela ou planilha. O DocFAST tira um print e abre a IA explicando fórmulas como PROCX, IFS e dados."),
             ("📋", "Histórico Visual da Área de Transferência (Ctrl + Alt + V)",
-             "Pressione <b>Ctrl + Alt + V</b> para abrir o painel Liquid-Glass com os últimos 25 itens copiados (textos, links, imagens e tabelas) prontos para colar com 1 clique."),
-
-            ("📄", "Extrair Mídias de Arquivos do Office (.docx, .pptx, .xlsx)",
-             "Arraste qualquer apresentação do PowerPoint (.pptx) ou documento do Word (.docx) e selecione <i>Extrair Mídias</i> para extrair todas as fotos e gráficos na resolução nativa máxima."),
-
-            ("🔏", "Certificado Digital ICP-Brasil (.pfx / A1)",
-             "Na ferramenta de PDF, clique em <i>Certificado Digital (ICP-Brasil)</i> para carregar seu arquivo .pfx e aplicar o selo oficial com hash SHA-256 e conformidade com a MP 2.200-2/2001."),
-
-            ("🎞️", "Gravar GIFs da Tela (até 15s)",
-             "Selecione uma área da tela pelo menu da bandeja e grave tutoriais ou demonstrações de bugs em GIFs ultra-leves (< 2 MB) salvos diretamente no seu Desktop."),
+             "Pressione <b>Ctrl + Alt + V</b> para ver os últimos 25 itens copiados (textos, imagens e tabelas) prontos para colar."),
         ]
+        tabs.addTab(make_tab(t1), "⚡ Atalhos & Gestos")
 
-        for icon_symbol, title, description in guide_items:
-            card = QFrame()
-            card.setStyleSheet("background: rgba(255,255,255,0.06); border-radius: 8px; padding: 6px 10px; margin-bottom: 4px;")
-            c_lay = QHBoxLayout(card)
-            c_lay.setContentsMargins(6, 6, 6, 6)
-            c_lay.setSpacing(10)
+        # Tab 2: AI and Productivity
+        t2 = [
+            ("✨", "Assistente Liquid AI Multimodal",
+             "Converse com a IA sobre qualquer arquivo arrastado ou texto selecionado, analisando código, imagens e contratos com precisão."),
+            ("📝", "Notas Rápidas Fixas de Vidro (Sticky Notes)",
+             "Crie lembretes corporativos translúcidos fixados na tela com múltiplas paletas de cores suaves que salvam sozinhas."),
+            ("📡", "Comunicados em Rede Local (DSS & Avisos da Equipe)",
+             "Envie avisos de segurança ou reuniões para todos os computadores da rede da empresa sem precisar de servidor central."),
+            ("📊", "Diagnóstico de Sistema & Hardware",
+             "Acompanhe o uso de disco (C:), memória RAM e especificações do processador em tempo real."),
+        ]
+        tabs.addTab(make_tab(t2), "🤖 IA & Produtividade")
 
-            badge = QLabel(icon_symbol)
-            badge.setAlignment(Qt.AlignCenter)
-            badge.setFixedSize(32, 32)
-            badge.setStyleSheet("background: rgba(90, 200, 255, 0.15); border: 1px solid rgba(90, 200, 255, 0.3); border-radius: 16px; font-size: 13pt;")
-            c_lay.addWidget(badge)
+        # Tab 3: Automation and Universal Conversions
+        t3 = [
+            ("📂", "Pastas Monitoradas (Watch Folders)",
+             "Cadastre pastas locais: qualquer arquivo jogado nelas é automaticamente convertido para PDF, CSV, etc. em segundo plano."),
+            ("🔀", "Conversor Universal de Dados Estruturados",
+             "Conversão direta entre JSON, CSV, TSV, YAML, XML, tabelas Markdown e planilhas Excel (XLSX)."),
+            ("🌐", "Arrastar Imagens Direto do Navegador Web",
+             "Arraste fotos e links do Chrome, Edge ou Firefox segurando o gatilho; o DocFAST baixa e converte sem você precisar salvar primeiro."),
+            ("📈", "Painel de Conversões Recentes & Economia de Disco",
+             "Visualize todos os arquivos convertidos, a taxa de redução de tamanho (% menor) e botões rápidos para abrir ou mostrar na pasta."),
+        ]
+        tabs.addTab(make_tab(t3), "📂 Automação & Dados")
 
-            t_box = QVBoxLayout()
-            t_box.setSpacing(2)
-            lbl_title = QLabel(title)
-            lbl_title.setStyleSheet("font-size: 10pt; font-weight: 700; color: #ffffff;")
-            lbl_desc = QLabel(description)
-            lbl_desc.setWordWrap(True)
-            lbl_desc.setStyleSheet("color: #cbd5e1; font-size: 9pt; line-height: 1.3;")
-            t_box.addWidget(lbl_title)
-            t_box.addWidget(lbl_desc)
-            c_lay.addLayout(t_box, 1)
+        # Tab 4: Documents and Media
+        t4 = [
+            ("🔏", "Assinatura com Certificado Digital ICP-Brasil (A1 / PFX)",
+             "Assine PDFs com certificado criptográfico PAdES oficial, hash SHA-256 e selo de conformidade jurídica."),
+            ("🎞️", "Gravação de Tela Direto para GIF Otimizado (até 15s)",
+             "Selecione uma área da tela e grave pequenos tutoriais ou demonstrações de bugs salvos direto no seu Desktop."),
+            ("📄", "Extrair Mídias de Arquivos do Office (.pptx, .docx, .xlsx)",
+             "Extraia todas as fotos e logotipos embutidos em apresentações ou documentos com 1 clique na resolução máxima."),
+            ("📑", "Organizar, Rotacionar e Excluir Páginas de PDF",
+             "Reordene páginas por arrasto em uma grade interativa de miniaturas visuais antes de salvar."),
+        ]
+        tabs.addTab(make_tab(t4), "📑 PDF & Mídias")
 
-            self.body.addWidget(card)
-
-        self.body.addStretch(1)
+        self.body.addWidget(tabs, 1)
 
         foot = QHBoxLayout()
         if IS_WIN or IS_MAC or IS_LINUX:
             autostart_label = t("settings_autostart") if IS_WIN else t("settings_autostart_mac")
             self.auto = QCheckBox(autostart_label)
-            self.auto.setChecked(True)
+            self.auto.setChecked(autostart_enabled())
+            self.auto.toggled.connect(set_autostart)
             foot.addWidget(self.auto)
+
         foot.addStretch(1)
-        ok = QPushButton("Entendi, vamos começar!")
-        ok.setObjectName("primary")
-        ok.clicked.connect(self._done)
-        foot.addWidget(ok)
+        b = QPushButton(t("welcome_done"))
+        b.setObjectName("primary")
+        b.clicked.connect(self._done)
+        foot.addWidget(b)
         self.body.addLayout(foot)
 
     def _done(self):
         self.s.set("welcomed", True)
-        if IS_WIN or IS_MAC or IS_LINUX:
-            set_autostart(self.auto.isChecked())
         self.close()
