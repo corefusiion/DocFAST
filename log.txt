@@ -1,0 +1,26 @@
+[   0.00] display :99 screen (1280, 800) cmd ['docfast']
+[  16.61] PASS JPG → PNG                        9.9s  D-Photo.png · 2400×1600
+[  26.17] PASS JPG → WEBP                       9.0s  D-Photo.webp · 2400×1600
+[  49.65] Traceback (most recent call last):
+  File "/__w/DocFAST/DocFAST/demo/e2e_linux.py", line 252, in run
+    raise AssertionError("no output file appeared")
+AssertionError: no output file appeared
+
+[  49.75] FAIL JPG → HEIC                      23.0s  AssertionError: no output file appeared
+[  59.04] PASS JPG → PDF                        8.7s  D-Photo.pdf · 1 page(s)
+[  68.35] PASS PNG → JPG                        8.7s  D-Graphic.jpg · 800×533
+[  78.77] PASS PDF → JPG (3 pages)              9.8s  3 × .jpg
+[  88.06] PASS PDF → TXT                        8.7s  D-Report.txt
+[  97.35] PASS DOCX → PDF                       8.7s  D-Letter.pdf · 1 page(s)
+[ 106.62] PASS TXT → PDF                        8.7s  D-Notes.pdf · 1 page(s)
+[ 116.78] PASS PDF Split                        9.6s  3 PDFs
+[ 126.93] PASS PDF Rotate                       9.5s  all pages at 90°
+[ 137.34] PASS PDF Compress                     9.8s  227 KB → 108 KB
+[ 148.51] PASS Merge 2 PDFs                    10.6s  5 pages
+[ 161.53] PASS Compress (window, Enter)        12.4s  354 KB → 112 KB · 69% smaller
+[ 174.54] PASS Resize 50% (window, Enter)      12.4s  2400×1600 → 1200×800
+[ 188.53] PASS Add BG (window, Enter)          13.4s  800×533 → 992×725
+[ 201.52] PASS Metadata: remove all (Enter)    12.4s  0 metadata fields left
+[ 215.53] PASS PDF Protect (password)          13.4s  AES-256, password works
+[ 224.48] PASS Open With → AVIF (click)         8.4s  D-Photo.avif · 2400×1600
+[ 224.55] DONE 18/19
